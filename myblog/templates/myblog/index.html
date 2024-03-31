@@ -1,0 +1,127 @@
+{% extends './base.html' %}
+{% load static %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block header %}
+    {% include './block/slider.html' %}
+{% endblock %}
+
+{% block content %}
+    <section class="all-posts">
+        <div class="container">
+          <h1 class="my-4 text-center">Последние записи блога</h1>
+          <div class="row">
+              <div class="col-md-4">
+                  <div class="card mb-4 shadow-sm">
+                      <img src="{% static 'img/third_img.jpg' %}" alt="" class="card-img-top">
+                      <div class="card-body">
+                          <h4 class="card-title">Заголовок</h4>
+                          <p class="card-text">Это краткое описание поста. Это краткое описание поста. Это краткое описание поста. </p>
+                          <div class="d-flex justify-content-between align-items-center">
+                              <div class="btn-group">
+                                  <a href="#" class="btn btn-sm btn-outline-secondary">Подробнее</a>
+                              </div>
+                              <small class="text-muted">22.10.2020</small>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="card mb-4 shadow-sm">
+                      <img src="{% static 'img/second_img.jpg' %}" alt="" class="card-img-top">
+                      <div class="card-body">
+                          <h4 class="card-title">Заголовок</h4>
+                          <p class="card-text">Это краткое описание поста. Это краткое описание поста. Это краткое описание поста. </p>
+                          <div class="d-flex justify-content-between align-items-center">
+                              <div class="btn-group">
+                                  <a href="#" class="btn btn-sm btn-outline-secondary">Подробнее</a>
+                              </div>
+                              <small class="text-muted">21.10.2020</small>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="card mb-4 shadow-sm">
+                      <img src="{% static 'img/first_img.jpg' %}" alt="" class="card-img-top">
+                      <div class="card-body">
+                          <h4 class="card-title">Заголовок</h4>
+                          <p class="card-text">Это краткое описание поста. Это краткое описание поста. Это краткое описание поста. </p>
+                          <div class="d-flex justify-content-between align-items-center">
+                              <div class="btn-group">
+                                  <a href="#" class="btn btn-sm btn-outline-secondary">Подробнее</a>
+                              </div>
+                              <small class="text-muted">20.10.2020</small>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+
+              <div class="col-md-4">
+                  <div class="card mb-4 shadow-sm">
+                      <img src="{% static 'img/third_img.jpg' %}" alt="" class="card-img-top">
+                      <div class="card-body">
+                          <h4 class="card-title">Заголовок</h4>
+                          <p class="card-text">Это краткое описание поста. Это краткое описание поста. Это краткое описание поста. </p>
+                          <div class="d-flex justify-content-between align-items-center">
+                              <div class="btn-group">
+                                  <a href="#" class="btn btn-sm btn-outline-secondary">Подробнее</a>
+                              </div>
+                              <small class="text-muted">19.10.2020</small>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="card mb-4 shadow-sm">
+                      <img src="{% static 'img/second_img.jpg' %}" alt="" class="card-img-top">
+                      <div class="card-body">
+                          <h4 class="card-title">Заголовок</h4>
+                          <p class="card-text">Это краткое описание поста. Это краткое описание поста. Это краткое описание поста. </p>
+                          <div class="d-flex justify-content-between align-items-center">
+                              <div class="btn-group">
+                                  <a href="#" class="btn btn-sm btn-outline-secondary">Подробнее</a>
+                              </div>
+                              <small class="text-muted">18.10.2020</small>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="card mb-4 shadow-sm">
+                      <img src="{% static 'img/first_img.jpg' %}" alt="" class="card-img-top">
+                      <div class="card-body">
+                          <h4 class="card-title">Заголовок</h4>
+                          <p class="card-text">Это краткое описание поста. Это краткое описание поста. Это краткое описание поста. </p>
+                          <div class="d-flex justify-content-between align-items-center">
+                              <div class="btn-group">
+                                  <a href="#" class="btn btn-sm btn-outline-secondary">Подробнее</a>
+                              </div>
+                              <small class="text-muted">17.10.2020</small>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block pagination %}
+    <section class="my-pagination">
+      <nav aria-label="Paginate me">
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled">
+                <a class="page-link" href="#" tabindex="-1">Предыдущая</a>
+            </li>
+            <li class="page-item"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#">Следующая</a>
+            </li>
+        </ul>
+      </nav>
+    </section>
+{% endblock %}
