@@ -6,106 +6,30 @@
 {% block header %}
     {% include './block/slider.html' %}
 {% endblock %}
-
 {% block content %}
-    <section class="all-posts">
-        <div class="container">
-          <h1 class="my-4 text-center">Последние записи блога</h1>
-          <div class="row">
-              <div class="col-md-4">
-                  <div class="card mb-4 shadow-sm">
-                      <img src="{% static 'img/third_img.jpg' %}" alt="" class="card-img-top">
-                      <div class="card-body">
-                          <h4 class="card-title">Заголовок</h4>
-                          <p class="card-text">Это краткое описание поста. Это краткое описание поста. Это краткое описание поста. </p>
-                          <div class="d-flex justify-content-between align-items-center">
-                              <div class="btn-group">
-                                  <a href="#" class="btn btn-sm btn-outline-secondary">Подробнее</a>
-                              </div>
-                              <small class="text-muted">22.10.2020</small>
-                          </div>
-                      </div>
-                  </div>
+  <section class="all-posts mt-5">
+    <h1 class="text-center">Последние записи блога</h1>
+    <div class="container">
+      <div class="row">
+      {% for post in posts %}
+        <div class="col-md-4 d-flex">
+          <div class="card mb-4">
+            <img src="media/{{ post.image }}" alt="" class="card-img-top" />
+            <div class="card-body">
+              <h4 class="card-text">{{ post.h1 }}</h4>
+              <div class="card-text">{{ post.description|safe|truncatechars:100 }}</div>
+            </div>
+            <div class="card-footer">
+              <div class="d-flex justify-content-between align-items-center mt 3">
+                <small class="text-muted">{{ post.created_at }}</small>
+                <a href="{% url 'post_detail' slug=post.url %}" class="btn btn-sm btn-outline-secondary">Подробнее</a>
               </div>
-              <div class="col-md-4">
-                  <div class="card mb-4 shadow-sm">
-                      <img src="{% static 'img/second_img.jpg' %}" alt="" class="card-img-top">
-                      <div class="card-body">
-                          <h4 class="card-title">Заголовок</h4>
-                          <p class="card-text">Это краткое описание поста. Это краткое описание поста. Это краткое описание поста. </p>
-                          <div class="d-flex justify-content-between align-items-center">
-                              <div class="btn-group">
-                                  <a href="#" class="btn btn-sm btn-outline-secondary">Подробнее</a>
-                              </div>
-                              <small class="text-muted">21.10.2020</small>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-md-4">
-                  <div class="card mb-4 shadow-sm">
-                      <img src="{% static 'img/first_img.jpg' %}" alt="" class="card-img-top">
-                      <div class="card-body">
-                          <h4 class="card-title">Заголовок</h4>
-                          <p class="card-text">Это краткое описание поста. Это краткое описание поста. Это краткое описание поста. </p>
-                          <div class="d-flex justify-content-between align-items-center">
-                              <div class="btn-group">
-                                  <a href="#" class="btn btn-sm btn-outline-secondary">Подробнее</a>
-                              </div>
-                              <small class="text-muted">20.10.2020</small>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-
-              <div class="col-md-4">
-                  <div class="card mb-4 shadow-sm">
-                      <img src="{% static 'img/third_img.jpg' %}" alt="" class="card-img-top">
-                      <div class="card-body">
-                          <h4 class="card-title">Заголовок</h4>
-                          <p class="card-text">Это краткое описание поста. Это краткое описание поста. Это краткое описание поста. </p>
-                          <div class="d-flex justify-content-between align-items-center">
-                              <div class="btn-group">
-                                  <a href="#" class="btn btn-sm btn-outline-secondary">Подробнее</a>
-                              </div>
-                              <small class="text-muted">19.10.2020</small>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-md-4">
-                  <div class="card mb-4 shadow-sm">
-                      <img src="{% static 'img/second_img.jpg' %}" alt="" class="card-img-top">
-                      <div class="card-body">
-                          <h4 class="card-title">Заголовок</h4>
-                          <p class="card-text">Это краткое описание поста. Это краткое описание поста. Это краткое описание поста. </p>
-                          <div class="d-flex justify-content-between align-items-center">
-                              <div class="btn-group">
-                                  <a href="#" class="btn btn-sm btn-outline-secondary">Подробнее</a>
-                              </div>
-                              <small class="text-muted">18.10.2020</small>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-              <div class="col-md-4">
-                  <div class="card mb-4 shadow-sm">
-                      <img src="{% static 'img/first_img.jpg' %}" alt="" class="card-img-top">
-                      <div class="card-body">
-                          <h4 class="card-title">Заголовок</h4>
-                          <p class="card-text">Это краткое описание поста. Это краткое описание поста. Это краткое описание поста. </p>
-                          <div class="d-flex justify-content-between align-items-center">
-                              <div class="btn-group">
-                                  <a href="#" class="btn btn-sm btn-outline-secondary">Подробнее</a>
-                              </div>
-                              <small class="text-muted">17.10.2020</small>
-                          </div>
-                      </div>
-                  </div>
-              </div>
+            </div>
           </div>
         </div>
-    </section>
+        {% endfor %}
+    </div>
+  </section>
 {% endblock %}
 
 {% block pagination %}
