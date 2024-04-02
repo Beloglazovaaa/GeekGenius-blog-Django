@@ -18,7 +18,7 @@
               <h4 class="card-title">{{ post.h1 }}</h4>
               <p class="card-text">{{ post.description|safe|truncatechars:100 }}</p>
               <div class="mt-auto">
-                <a href="#" class="btn btn-sm btn-outline-secondary">Подробнее</a>
+                <a href="{% url 'post_detail' slug=post.url %}" class="btn btn-sm btn-outline-secondary">Подробнее</a>
                 <small class="text-muted">{{ post.created_at }}</small>
               </div>
             </div>
