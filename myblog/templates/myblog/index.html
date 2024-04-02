@@ -14,7 +14,7 @@
                 {% for post in page_obj %}
                     <div class="col-md-4">
                         <div class="card mb-4 shadow-sm">
-                            <img src="media/{{ post.image }}" alt="" class="card-img-top">
+                            <img src="media/{{ post.image }}" alt="" class="object-fit-cover card-img-top" style="height:200px">
                             <div class="card-body">
                                 <h4 class="card-title">{{ post.h1 }}</h4>
                                 <p class="card-text">{{post.description|safe|truncatechars:100 }}</p>
