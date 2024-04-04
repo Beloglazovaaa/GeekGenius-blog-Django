@@ -14,6 +14,17 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <div class="navbar-nav me-auto mb-2 mb-lg-0">
           <a class="nav-link" href="{% url 'index' %}">Главная</a>
+          <!-- Добавляем выпадающий список секций блога -->
+          <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBlog" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Разделы блога
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownBlog">
+              <li><a class="dropdown-item" href="#">Полиномиальная регрессия</a></li>
+              <li><a class="dropdown-item" href="#">Градиентный бустинг</a></li>
+              <li><a class="dropdown-item" href="#">Рекурсивная нейронная сеть</a></li>
+            </ul>
+          </div>
         </div>
         <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
@@ -25,6 +36,7 @@
     </div>
   </nav>
 </section>
+
 
 <!-- Модальное окно регистрации -->
 <div class="modal fade" id="registrationModal" tabindex="-1" aria-labelledby="registrationModalLabel" aria-hidden="true">
