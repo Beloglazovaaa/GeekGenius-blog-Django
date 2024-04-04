@@ -11,16 +11,13 @@
     <section class="my-post-detail">
         <div class="container">
             <div class="row">
-                <!--    ЭТО ЛЕВАЯ КОЛОНКА КОНТЕНТА ПОСТА -->
                 <div class="col-lg-8">
-                    <!--    ЭТО ХЛЕБНЫЕ КРОШКИ -->
                     <nav aria-label="breadcrumb" class="my-4">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
                             <li class="breadcrumb-item active" aria-current="page">{{ post.h1 }}</li>
                         </ol>
                     </nav>
-                    <!--    ЭТО ТЕЛО ПОСТА -->
                     <img class="img-fluid rounded " src="{{ post.image.url }}" alt="">
                     <hr>
                     <p class="lead">
