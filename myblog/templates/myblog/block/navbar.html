@@ -29,7 +29,8 @@
         <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
           <button class="btn btn-outline-success me-2" type="submit">Найти</button>
-          <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">Войти</button>
+          <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">Вход</button>
+          <a href="{% url 'signout' %}" class="btn btn-outline-light">Выход</a>
           <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#registrationModal">Регистрация</button>
         </form>
       </div>
@@ -76,7 +77,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form method="post" action="{% url 'login' %}">
+        <form method="post" action="{% url 'signin' %}">
           {% csrf_token %}
           <div class="mb-3">
             <label for="loginUsername" class="form-label">Имя пользователя</label>
@@ -92,5 +93,7 @@
     </div>
   </div>
 </div>
+
+
 
 
