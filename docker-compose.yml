@@ -2,13 +2,13 @@ version: '3.8'
 
 services:
   db:
-    image: postgres
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
+    container_name: db_blog
+    image: mysql:latest
+    ports:
+      - "3305:3306"
     environment:
-      POSTGRES_DB: mydatabase
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: mypassword
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: DB
 
   web:
     build: .
