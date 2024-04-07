@@ -1,35 +1,99 @@
 {% load static %}
 <section class="my-navigation">
-      <nav class="navbar navbar-expand-lg bg-body-tertiary"  data-bs-theme="dark">
-           <div id="google_translate_element"></div>
-                    <script type="text/javascript">
-                        function googleTranslateElementInit() {
-                            new google.translate.TranslateElement({pageLanguage: 'ru'}, 'google_translate_element');
-                        }
-                    </script>
-                <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-            </div>
-          <div class="container-fluid">
-              <a href="{% url 'index' %}" class="navbar-brand">
-                  <img src="{% static 'img/GeekGenius-logo.png' %}" class="d-block" alt="GeekGenius-logo" width="30" height="30">
-              </a>
-              <a href="{% url 'index' %}" class="navbar-brand">
-                  <img src="{% static 'img/django-logo.png' %}" class="d-block" alt="django-logo" width="60" height="30">
-              </a>
-              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                  <span class="navbar-toggler-icon"></span>
-              </button>
-              <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                  <div class="navbar-nav me-auto mb-2 mb-lg-0">
-                      <a class="nav-link" href="{% url 'index' %}">Главная</a>
-                  </div>
-                  <form class="d-flex" role="search">
-                      <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
-                      <button class="btn btn-outline-success me-2" type="submit">Найти</button>
-                      <button type="button" class="btn btn-outline-light me-2">Вход</button>
-                      <button type="button" class="btn btn-outline-light me-2">Регистрация</button>
-                  </form>
-            </div>
+  <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
+    <div class="container-fluid">
+      <a href="{% url 'index' %}" class="navbar-brand">
+        <img src="{% static 'img/GeekGenius-logo.png' %}" alt="GeekGenius-logo" width="30" height="30">
+      </a>
+      <a href="{% url 'index' %}" class="navbar-brand">
+        <img src="{% static 'img/django-logo.png' %}" alt="django-logo" width="60" height="30">
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <div class="navbar-nav me-auto mb-2 mb-lg-0">
+          <a class="nav-link" href="{% url 'index' %}">Главная</a>
+          <!-- Добавляем выпадающий список секций блога -->
+          <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBlog" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Разделы блога
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownBlog">
+              <li><a class="dropdown-item" href="#">Полиномиальная регрессия</a></li>
+              <li><a class="dropdown-item" href="#">Градиентный бустинг</a></li>
+              <li><a class="dropdown-item" href="#">Рекурсивная нейронная сеть</a></li>
+            </ul>
           </div>
-      </nav>
+        </div>
+        <form class="d-flex" role="search">
+          <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
+          <button class="btn btn-outline-success me-2" type="submit">Найти</button>
+          <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">Вход</button>
+          <a href="{% url 'signout' %}" class="btn btn-outline-light">Выход</a>
+          <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#registrationModal">Регистрация</button>
+        </form>
+      </div>
+    </div>
+  </nav>
 </section>
+
+
+<!-- Модальное окно регистрации -->
+<div class="modal fade" id="registrationModal" tabindex="-1" aria-labelledby="registrationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="registrationModalLabel">Форма регистрации</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{% url 'signup' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="inputUsername" class="form-label">Имя пользователя</label>
+            <input type="text" class="form-control" id="inputUsername" name="username" required>
+          </div>
+          <div class="mb-3">
+            <label for="inputPassword" class="form-label">Пароль</label>
+            <input type="password" class="form-control" id="inputPassword" name="password" required>
+          </div>
+          <div class="mb-3">
+            <label for="ReInputPassword" class="form-label">Повторите пароль</label>
+            <input type="password" class="form-control" id="ReInputPassword" name="repeat_password" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginModalLabel">Вход в систему</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="{% url 'signin' %}">
+          {% csrf_token %}
+          <div class="mb-3">
+            <label for="loginUsername" class="form-label">Имя пользователя</label>
+            <input type="text" class="form-control" id="loginUsername" name="username" required>
+          </div>
+          <div class="mb-3">
+            <label for="loginPassword" class="form-label">Пароль</label>
+            <input type="password" class="form-control" id="loginPassword" name="password" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Войти</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
