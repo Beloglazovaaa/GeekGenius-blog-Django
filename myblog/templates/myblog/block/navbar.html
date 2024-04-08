@@ -14,17 +14,30 @@
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <div class="navbar-nav me-auto mb-2 mb-lg-0">
           <a class="nav-link" href="{% url 'index' %}">Главная</a>
+          <!-- Добавляем выпадающий список секций блога -->
+          <div class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBlog" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Разделы блога
+            </a>
+            <ul class="dropdown-menu" aria-labelledby="navbarDropdownBlog">
+              <li><a class="dropdown-item" href="#">Полиномиальная регрессия</a></li>
+              <li><a class="dropdown-item" href="#">Градиентный бустинг</a></li>
+              <li><a class="dropdown-item" href="#">Рекурсивная нейронная сеть</a></li>
+            </ul>
+          </div>
         </div>
         <form class="d-flex" role="search">
           <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
           <button class="btn btn-outline-success me-2" type="submit">Найти</button>
-          <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">Войти</button>
+          <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#loginModal">Вход</button>
+          <a href="{% url 'signout' %}" class="btn btn-outline-light">Выход</a>
           <button type="button" class="btn btn-outline-light me-2" data-bs-toggle="modal" data-bs-target="#registrationModal">Регистрация</button>
         </form>
       </div>
     </div>
   </nav>
 </section>
+
 
 <!-- Модальное окно регистрации -->
 <div class="modal fade" id="registrationModal" tabindex="-1" aria-labelledby="registrationModalLabel" aria-hidden="true">
@@ -64,7 +77,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form method="post" action="{% url 'login' %}">
+        <form method="post" action="{% url 'signin' %}">
           {% csrf_token %}
           <div class="mb-3">
             <label for="loginUsername" class="form-label">Имя пользователя</label>
@@ -80,5 +93,7 @@
     </div>
   </div>
 </div>
+
+
 
 
