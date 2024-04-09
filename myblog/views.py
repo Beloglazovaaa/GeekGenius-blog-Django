@@ -7,6 +7,13 @@ from django.contrib.auth import login, authenticate
 from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.views import View
+from django.shortcuts import render
+
+def polynomial_regression_page(request):
+    return render(request, 'myblog/polynomial_regression.html')
+
+def gradient_boosting_page(request):
+    return render(request, 'myblog/gradient_boosting.html')
 
 class MainView(View):
     def get(self, request, *args, **kwargs):
