@@ -17,10 +17,8 @@ import json
 def polynomial_regression_page(request):
     return render(request, 'myblog/polynomial_regression.html')
 
-
 def gradient_boosting_page(request):
     return render(request, 'myblog/gradient_boosting.html')
-
 
 def recurrent_neural_network_page(request):
     return render(request, 'myblog/recurrent_neural_network.html')
@@ -97,7 +95,6 @@ class PostDetailView(View):
             'post': post
         })
 
-
 class SignUpView(View):
     def get(self, request, *args, **kwargs):
         form = SignUpForm()
@@ -146,16 +143,15 @@ class LogoutView(View):
         logout(request)
         return redirect('index')  # Перенаправляем на главную страницу после выхода
 
-
 class SearchResultsView(View):
     def get(self, request, *args, **kwargs):
-        query = self.request.GET.get('q')
+        query = request.GET.get('q')
         results = ""
         if query:
             results = Post.objects.filter(
-                Q(h1__icontains=query) | Q(content__icontains=query)
+                Q(content__icontains=query)
             )
-        paginator = Paginator(results, 6)
+        paginator = Paginator(results, 3)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         return render(request, 'myblog/search.html', context={
@@ -163,6 +159,7 @@ class SearchResultsView(View):
             'results': page_obj,
             'count': paginator.count
         })
+
 
 
 from sklearn.datasets import make_regression
