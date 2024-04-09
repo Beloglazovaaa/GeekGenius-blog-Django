@@ -30,7 +30,7 @@
         padding: 1px;
         background-color: #f7f7f7;
         font-family: monospace;
-        line-height: 1;
+        line-height: 1.5;
         overflow-x: auto;
         text-align: left; /* Выравниваем текст по левому краю */
     }
@@ -82,15 +82,46 @@
     </p>
 
     <div class="img-container">
-      <img class="img-fluid rounded" src="/media/pol_media/2_pol.png" alt="" width="600" height="400">
+      <pre class="code-cell">
+        <code>
+        from sklearn.preprocessing import PolynomialFeatures from sklearn. linear_model import LinearRegression from sklearn.metrics import mean_squared_error
+        # Создание полиномиальных признаков
+        poly = PolynomialFeatures (degree=2)
+        X_train_poly = poly.fit_
+        _transform (X_train_scaled)
+        X_test_poly = poly transform(X_test_scaled)
+        # Обучение модели
+        model_poly = LinearRegression()
+        model_poly. fit(X_train_poly, y_train)
+        # Предсказание на тестовой выборке
+        y_pred_poly = model_poly-predict(X_test_poly)
+        # Оценка качества модели
+        mse_poly = mean_squared_errory_test, y_pred_poly)
+        print("Mean Squared Error (Polynomial Regression):", mse_poly)
+
+        Mean Squared Error (Polynomial Regression): 14.56835497618306
+        </code>
+      </pre>
     </div>
 
     <p>
       Выводится значение среднеквадратичной ошибки (MSE), чтобы оценить качество модели. Для визуализации результатов можно построить график, где по оси X будут настоящие цены на жилье, а по оси Y - предсказанные цены на жилье. Чем ближе точки к диагонали, тем лучше модель.
     </p>
 
-    <div class="img-container">
-      <img class="img-fluid rounded" src="/media/pol_media/3_pol.png" alt="" width="600" height="400">
+       <div class="img-container">
+      <pre class="code-cell">
+        <code>
+        import matplotlib.pyplot as plt
+        # Построение графика рассеяния для фактических и предсказанных значений
+        plt. figure(figsize=(10, 6))
+        plt.scatter(y_test, Y_pred_poly, color='blue')
+        plt. plot( [min(y_test), max(y_test)], [min(y_test), max(y_test)], linestyle='—', color='red')
+        plt.xlabel ( 'Фактические значения')
+        plt. ylabel( 'Предсказанные значения')
+        plt. title ('График рассеяния для полиномиальной регрессии')
+        plt.show()
+        </code>
+      </pre>
     </div>
 
     <p>
