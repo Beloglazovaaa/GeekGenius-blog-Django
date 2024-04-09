@@ -1,8 +1,10 @@
 # myblog/urls.py
 from django.urls import path
-from .views import MainView, PostDetailView, SignUpView, SignInView, polynomial_regression_page, gradient_boosting_page  # Импортируйте представление polynomial_regression_page
+from .views import MainView, PostDetailView, SignUpView, SignInView, polynomial_regression_page, gradient_boosting_page, SearchResultsView  # Импортируйте представление polynomial_regression_page
 from django.contrib.auth.views import LogoutView
 from django.conf import settings
+from .views import recurrent_neural_network_page
+
 
 urlpatterns = [
     path('', MainView.as_view(), name='index'),
