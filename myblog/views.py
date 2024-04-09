@@ -3,10 +3,9 @@ from django.views import View
 from django.core.paginator import Paginator
 from .models import Post
 from .forms import SignUpForm, SignInForm
-from django.contrib.auth import login, authenticate
+from django.contrib.auth import login, authenticate, logout
 from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import AuthenticationForm
-from django.views import View
 from django.shortcuts import render
 
 def polynomial_regression_page(request):
@@ -76,3 +75,13 @@ class SignInView(View):
         return render(request, 'myblog/signin.html', context={
             'form': form,
         })
+
+from django.views import View
+from django.contrib.auth import logout
+from django.shortcuts import redirect
+
+class LogoutView(View):
+    def get(self, request, *args, **kwargs):
+        logout(request)
+        return redirect('index')  # Перенаправляем на главную страницу после выхода
+
