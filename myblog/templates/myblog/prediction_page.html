@@ -32,6 +32,10 @@
         <div id="predictionResult"></div>
     </div>
 
+    <!-- Подключение библиотеки toastr -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
     <script>
         // Пример AJAX запроса для кнопки "Обучить Модель"
         $('#train-model').click(function () {
@@ -39,6 +43,8 @@
                 url: '/train-model', // URL к вашему view для обучения модели
                 method: 'GET',
                 success: function (response) {
+                    // Показываем уведомление "Модель обучена"
+                    toastr.success('Модель успешно обучена');
                     $('#results').html(response);
                 }
             });
