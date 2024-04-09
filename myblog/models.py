@@ -7,9 +7,6 @@ class DataModel(models.Model):
     feature2 = models.FloatField()
     target = models.FloatField()
 
-    def __str__(self):
-        return self.title
-
 class Post(models.Model):
     h1 = models.CharField(max_length=200)
     title = models.CharField(max_length=200)

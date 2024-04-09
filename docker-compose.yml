@@ -21,3 +21,13 @@ services:
       - DATABASE_URL=mysql://root:root@db:3306/DB
     depends_on:
       - db
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin_java
+    environment:
+      - PMA_ARBITRARY=1
+      - PMA_HOST=db
+    restart: always
+    ports:
+      - 8081:80
