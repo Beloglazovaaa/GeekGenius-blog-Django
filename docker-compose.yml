@@ -5,7 +5,7 @@ services:
     container_name: db_blog
     image: mysql:latest
     ports:
-      - "3305:3306"
+      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: DB
@@ -18,9 +18,6 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=postgres://myuser:mypassword@db:5432/mydatabase
+      - DATABASE_URL=mysql://root:root@db:3306/DB
     depends_on:
       - db
-
-volumes:
-  postgres_data:
