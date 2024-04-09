@@ -155,6 +155,7 @@ class SearchResultsView(View):
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         return render(request, 'myblog/search.html', context={
+            'query': query,
             'title': 'Поиск',
             'results': page_obj,
             'count': paginator.count

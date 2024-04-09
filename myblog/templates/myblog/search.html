@@ -1,6 +1,6 @@
 {% extends './base.html' %}
 {% load static %}
-{% block title %}Поиск{% endblock %}
+{% block title %}Поиск: {{ query }}{% endblock %}
 
 {% block header %}
     {% include './block/search_form.html' %}
