@@ -7,6 +7,8 @@ from django.contrib.auth import login, authenticate, logout
 from django.http import HttpResponseRedirect
 from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render
+from django.db.models import Q
+
 
 def polynomial_regression_page(request):
     return render(request, 'myblog/polynomial_regression.html')
@@ -76,12 +78,25 @@ class SignInView(View):
             'form': form,
         })
 
-from django.views import View
-from django.contrib.auth import logout
-from django.shortcuts import redirect
 
 class LogoutView(View):
     def get(self, request, *args, **kwargs):
         logout(request)
         return redirect('index')  # Перенаправляем на главную страницу после выхода
 
+class SearchResultsView(View):
+    def get(self, request, *args, **kwargs):
+        query = self.request.GET.get('q')
+        results = ""
+        if query:
+            results = Post.objects.filter(
+                Q(h1__icontains=query) | Q(content__icontains=query)
+            )
+        paginator = Paginator(results, 6)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        return render(request, 'myblog/search.html', context={
+            'title': 'Поиск',
+            'results': page_obj,
+            'count': paginator.count
+        })
