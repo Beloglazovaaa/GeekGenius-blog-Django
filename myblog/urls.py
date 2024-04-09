@@ -2,7 +2,7 @@
 from django.urls import path
 from .views import MainView, PostDetailView, SignUpView, SignInView, polynomial_regression_page, gradient_boosting_page, \
     SearchResultsView, train_model, predict_model, \
-    prediction_page  # Импортируйте представление polynomial_regression_page
+    prediction_page
 from django.contrib.auth.views import LogoutView
 from django.conf import settings
 from .views import recurrent_neural_network_page

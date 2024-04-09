@@ -1,6 +1,6 @@
 {% extends './base.html' %}
 {% load static %}
-{% block title %}Поиск{% endblock %}
+{% block title %}Поиск: {{ query }}{% endblock %}
 
 {% block header %}
     {% include './block/search_form.html' %}
@@ -10,9 +10,7 @@
 <section class="my-post-detail">
     <div class="container">
         <div class="row">
-            <!--    ЭТО ЛЕВАЯ КОЛОНКА КОНТЕНТА ПОСТА -->
             <div class="col-lg-12">
-                <!--    ЭТО ХЛЕБНЫЕ КРОШКИ -->
                 <nav aria-label="breadcrumb" class="my-4">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{% url 'index' %}">Главная</a></li>
