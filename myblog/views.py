@@ -14,6 +14,9 @@ def polynomial_regression_page(request):
 def gradient_boosting_page(request):
     return render(request, 'myblog/gradient_boosting.html')
 
+def recurrent_neural_network_page(request):
+    return render(request, 'myblog/recurrent_neural_network.html')
+
 class MainView(View):
     def get(self, request, *args, **kwargs):
         posts = Post.objects.all().order_by('-created_at')
