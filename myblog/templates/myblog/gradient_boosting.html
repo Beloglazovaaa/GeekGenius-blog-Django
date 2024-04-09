@@ -7,20 +7,32 @@
     .content-container {
       margin: 20px auto; /* Отступы со всех сторон и автоматическое выравнивание по центру */
       line-height: 2; /* Здесь 1.5 - это множитель текущего размера шрифта */
-      max-width: 800px; /* Максимальная ширина контейнера */
+      max-width: 1000px; /* Максимальная ширина контейнера */
     }
 
     .img-container {
-      display: flex;
-      justify-content: center; /* Выравнивание по горизонтали */
-      align-items: center; /* Выравнивание по вертикали */
       margin-bottom: 20px; /* Дополнительный отступ снизу */
+      text-align: center; /* Выравнивание по центру */
     }
 
     .img-container img {
       max-width: 100%; /* Максимальная ширина изображения */
-      max-height: 100%; /* Максимальная высота изображения */
+      height: auto; /* Автоматическая высота */
     }
+    .code-cell {
+        margin-left: 0; /* Убираем отступ слева */
+        margin-right: auto; /* Выравнивание по правому краю */
+        width: auto; /* Ширина ячейки кода */
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        padding: 1px;
+        background-color: #f7f7f7;
+        font-family: monospace;
+        line-height: 1.5;
+        overflow-x: auto;
+        text-align: left; /* Выравниваем текст по левому краю */
+    }
+
   </style>
 
   <div class="content-container">
@@ -43,7 +55,16 @@
     </p>
 
     <div class="img-container">
-      <img class="img-fluid rounded" src="/media/boost_media/2_boost.png" alt="" width="600" height="400">
+      <pre class="code-cell">
+        <code>
+        import pandas as pd
+        # Загрузка данных
+        data = pd. read_csv('boston-housing-dataset.csv')
+        # Разделение на признаки и целевую переменную
+        X = data.drop ( 'MEDV', axis=1)
+        y = data ['MEDV']
+        </code>
+      </pre>
     </div>
 
     <p>
@@ -51,7 +72,28 @@
     </p>
 
     <div class="img-container">
-      <img class="img-fluid rounded" src="/media/boost_media/3_boost.png" alt="" width="600" height="400">
+      <pre class="code-cell">
+        <code>
+        from sklearn.model_selection import train_test_split from sklearn.preprocessing import StandardScaler import xgboost as xgb from sklearn.metrics import mean_squared_error
+        # Разделение на обучающую и тестовую выборки
+        X_train, X_test, Y_train, Y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        # Масштабирование признаков
+        scaler = StandardScaler ()
+        X_train_scaled = scaler.fit_transform(X_train)
+        X_test_scaled = scaler. transform (X_test)
+        # Обучение модели
+        mode l_xgb = xgb.XGBRegressor(objective ='reg:squarederror', colsample_bytree = 0.3, learning_rate = 0.1,
+        max_depth = 5, alpha = 10, n_estimators = 100)
+        model_gb. fit(X_train_scaled, y_train)
+        # Предсказание на тестовой выборке
+        y_pred_gb = model_gb.predict(X_test_scaled)
+        # Оценка качества модели
+        mse_xgb = mean_squared_errory_test, y_pred_gb)
+        print( "Mean Squared Error (XGBoost):", mse_xgb)
+
+        Mean Squared Error (XGBoost): 7.254786596653887
+        </code>
+      </pre>
     </div>
 
     <p>
@@ -59,9 +101,19 @@
     </p>
 
     <div class="img-container">
-      <img class="img-fluid rounded " src="/media/boost_media/4_boost.png" alt="" width="600" height="400">
+      <pre class="code-cell">
+        <code>
+        import matplotlib.pyplot as plt
+        # Вывод графика
+        plt.figure(figsize=(10, 6))
+        plt. scatter(y_test, y_pred_xgb, color='blue')
+        plt. title('График оценки модели (XGBoost)')
+        plt.xlabel ( 'Фактические значения')
+        plt.ylabel ('Предсказанные значения" )
+        plt. show()
+        </code>
+      </pre>
     </div>
-    <p>
 
     <div class="img-container">
       <img class="img-fluid rounded" src="/media/boost_media/5_boost.png" alt="" width="600" height="400">
