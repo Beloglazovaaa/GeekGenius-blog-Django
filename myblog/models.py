@@ -2,6 +2,13 @@ from django.db import models
 from django.contrib.auth.models import User
 from ckeditor_uploader.fields import RichTextUploadingField
 
+class DataModel(models.Model):
+    feature1 = models.FloatField()
+    feature2 = models.FloatField()
+    target = models.FloatField()
+
+    def __str__(self):
+        return self.title
 
 class Post(models.Model):
     h1 = models.CharField(max_length=200)

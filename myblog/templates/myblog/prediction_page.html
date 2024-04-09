@@ -1,0 +1,61 @@
+{% extends 'myblog/base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2>Страница прогнозирования</h2>
+
+        <!-- Кнопка для обучения модели -->
+        <button id="train-model" class="btn btn-info mb-3">Обучить модель</button>
+
+        <!-- Форма для предсказания -->
+        <form id="predictionForm">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="feature1">Признак 1</label>
+                <input type="number" class="form-control" id="feature1" name="feature1"
+                       placeholder="Введите значение признака 1" required>
+            </div>
+            <div class="form-group">
+                <label for="feature2">Признак 2</label>
+                <input type="number" class="form-control" id="feature2" name="feature2"
+                       placeholder="Введите значение признака 2" required>
+            </div>
+            <button type="submit" class="btn btn-primary mt-8">Получить прогноз</button>
+        </form>
+        <hr>
+        <div id="predictionResult"></div>
+    </div>
+
+    <script>
+        // Пример AJAX запроса для кнопки "Обучить Модель"
+        $('#train-model').click(function () {
+            $.ajax({
+                url: '/train-model', // URL к вашему view для обучения модели
+                method: 'GET',
+                success: function (response) {
+                    $('#results').html(response);
+                }
+            });
+        });
+
+        $("#predictionForm").submit(function (event) {
+            event.preventDefault();
+            $.ajax({
+                type: "POST",
+                url: "/run-prediction/",
+                data: JSON.stringify({
+                    feature1: $("#feature1").val(),
+                    feature2: $("#feature2").val(),
+                }),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                    $("#predictionResult").html("<h4>Результат прогноза: " + data.prediction + "</h4>");
+                },
+                error: function (errMsg) {
+                    $("#predictionResult").html("<h4>Ошибка: " + errMsg.responseJSON.error + "</h4>");
+                },
+            });
+        });
+    </script>
+{% endblock %}
