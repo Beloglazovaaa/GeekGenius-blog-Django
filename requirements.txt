@@ -1,4 +1,4 @@
-Django>=5.0.4
+Django>=4.2.11
 django-ckeditor==6.7.1
 mysqlclient>=2.2.4
 numpy>=1.26.4
