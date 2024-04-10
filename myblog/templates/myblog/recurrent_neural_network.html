@@ -6,20 +6,32 @@
     .content-container {
       margin: 20px auto; /* Отступы со всех сторон и автоматическое выравнивание по центру */
       line-height: 2; /* Здесь 1.5 - это множитель текущего размера шрифта */
-      max-width: 800px; /* Максимальная ширина контейнера */
+      max-width: 1000px; /* Максимальная ширина контейнера */
     }
 
     .img-container {
-      display: flex;
-      justify-content: center; /* Выравнивание по горизонтали */
-      align-items: center; /* Выравнивание по вертикали */
       margin-bottom: 20px; /* Дополнительный отступ снизу */
+      text-align: center; /* Выравнивание по центру */
     }
 
     .img-container img {
       max-width: 100%; /* Максимальная ширина изображения */
-      max-height: 100%; /* Максимальная высота изображения */
+      height: auto; /* Автоматическая высота */
     }
+    .code-cell {
+        margin-left: 0; /* Убираем отступ слева */
+        margin-right: auto; /* Выравнивание по правому краю */
+        width: auto; /* Ширина ячейки кода */
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        padding: 1px;
+        background-color: #f7f7f7;
+        font-family: monospace;
+        line-height: 1.5;
+        overflow-x: auto;
+        text-align: left; /* Выравниваем текст по левому краю */
+    }
+
   </style>
 
   <div class="content-container">
@@ -41,7 +53,17 @@
     </p>
 
     <div class="img-container">
-      <img class="img-fluid rounded" src="/media/neural_media/2_neu.png" alt="" width="600" height="400">
+      <pre class="code-cell">
+        <code>
+        from sklearn.model_selection import train_test_split from sklearn.preprocessing import StandardScaler
+        # Разделение на обучающую и тестовую выборки
+        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+        # Масштабирование признаков
+        scaler = StandardScaler (
+        X_train_scaled = scaler. fit_transform(X_train)
+        X_test_scaled = scaler. transform (X_test)
+        </code>
+      </pre>
     </div>
 
     <p>
@@ -49,7 +71,16 @@
     </p>
 
     <div class="img-container">
-      <img class="img-fluid rounded" src="/media/neural_media/3_neu.png" alt="" width="600" height="400">
+      <pre class="code-cell">
+        <code>
+        import numpy as np
+        # Преобразование данных для рекуррентной нейронной сети
+        num_samples, num_features = X_train_scaled. shape
+        X_train_reshaped = X_train_scaled. reshape(num_samples, 1, num_features)
+        num_samples_test, - = X_test_scaled. shape
+        X_test_reshaped = X_test_scaled. reshape(num_samples_test, 1, num_features)
+        </code>
+      </pre>
     </div>
 
     <p>
@@ -57,7 +88,16 @@
     </p>
 
     <div class="img-container">
-      <img class="img-fluid rounded " src="/media/neural_media/4_neu.png" alt="" width="600" height="400">
+      <pre class="code-cell">
+        <code>
+        from tensorflow.keras.models import Sequential from tensorflow.keras. layers import SimpleRNN, Dense
+        # Создание модели рекуррентной нейронной сети
+        model = Sequential(I
+        SimpleRNN(64, input_shape=(1, num_features), activation='relu'), Dense (1)
+        # Компиляция модели
+        model. compile(optimizer='adam', loss='mean_squared_error')
+        </code>
+      </pre>
     </div>
 
     <p>
@@ -65,7 +105,18 @@
     </p>
 
     <div class="img-container">
-      <img class="img-fluid rounded" src="/media/neural_media/5_neu.png" alt="" width="600" height="400">
+      <pre class="code-cell">
+        <code>
+        history = model.fit(X_train_reshaped, _train, epochs=10, validation_split=0.2)
+        import matplotlib.pyplot as plt
+        plt.plot(history.history['loss'], label='Training Loss')
+        plt.plot(history.history['val_loss'], label='Validation Loss')
+        plt. xlabel( 'Epochs')
+        plt.ylabel( 'Loss')
+        plt. legend ( )
+        plt. show()
+        </code>
+      </pre>
     </div>
 
     <p>
