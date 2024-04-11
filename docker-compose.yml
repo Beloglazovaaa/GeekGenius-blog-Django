@@ -5,20 +5,22 @@ services:
     container_name: db_blog
     image: mysql:latest
     ports:
-      - "3306:3306"
+      - "3307:3306"
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: DB
 
   web:
+    container_name: blog_django
+    image: blog:latest
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - .:/code
+      - django_blog:/app
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_URL=mysql://root:root@db:3306/DB
+      - DATABASE_HOST=db
     depends_on:
       - db
 
@@ -31,3 +33,6 @@ services:
     restart: always
     ports:
       - 8081:80
+
+volumes:
+  django_blog:
