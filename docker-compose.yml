@@ -20,7 +20,7 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - DATABASE_HOST=db
+      - MYSQL_HOST=db
     depends_on:
       - db
 
