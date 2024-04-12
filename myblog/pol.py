@@ -1,4 +1,5 @@
 import warnings
+from .models import DiabetesModel
 
 # Отключение предупреждений
 warnings.filterwarnings("ignore")
@@ -23,6 +24,7 @@ X_scaled = scaler.transform(X)
 model = LogisticRegression()
 model.fit(X_scaled, y)
 
+
 def predict_diabetes():
     print("Введите значения для всех признаков:")
     pregnancies = float(input("Количество беременностей: "))
@@ -35,11 +37,17 @@ def predict_diabetes():
     age = float(input("Возраст: "))
 
     # Масштабирование введенных пользователем данных
-    user_data = scaler.transform([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]])
+    user_data = scaler.transform(
+        [[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]])
 
     # Предсказание вероятности возникновения диабета
     probability = model.predict_proba(user_data)[:, 1][0]
+    DiabetesModel.objects.create(pregnancies=pregnancies, glucose=glucose, blood_pressure=blood_pressure,
+                                 skin_thickness=skin_thickness, insulin=insulin, bmi=bmi,
+                                 diabetes_pedigree_function=diabetes_pedigree_function, age=age,
+                                 probability=probability)
     return probability
+
 
 # Пример использования функции для предсказания вероятности диабета у пациента
 predicted_probability = predict_diabetes()

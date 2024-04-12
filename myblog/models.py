@@ -3,10 +3,24 @@ from django.contrib.auth.models import User
 from ckeditor_uploader.fields import RichTextUploadingField
 from django.utils import timezone
 
+
 class DataModel(models.Model):
     feature1 = models.FloatField()
     feature2 = models.FloatField()
     target = models.FloatField()
+
+
+class DiabetesModel(models.Model):
+    pregnancies = models.FloatField()
+    glucose = models.FloatField()
+    blood_pressure = models.FloatField()
+    skin_thickness = models.FloatField()
+    insulin = models.FloatField()
+    bmi = models.FloatField()
+    diabetes_pedigree_function = models.FloatField()
+    age = models.FloatField()
+    probability = models.FloatField()
+
 
 class Post(models.Model):
     h1 = models.CharField(max_length=200)
