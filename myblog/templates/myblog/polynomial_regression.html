@@ -3,45 +3,49 @@
 {% block title %}Полиномиальная регрессия{% endblock %}
 
 {% block content %}
-  <style>
-    .content-container {
-      margin: 20px auto; /* Отступы со всех сторон и автоматическое выравнивание по центру */
-      line-height: 2; /* Здесь 1.5 - это множитель текущего размера шрифта */
-      max-width: 1000px; /* Максимальная ширина контейнера */
-    }
+    <style>
+        .content-container {
+            margin: 20px auto; /* Отступы со всех сторон и автоматическое выравнивание по центру */
+            line-height: 2; /* Здесь 1.5 - это множитель текущего размера шрифта */
+            max-width: 1000px; /* Максимальная ширина контейнера */
+        }
 
-    .img-container {
-      margin-bottom: 20px; /* Дополнительный отступ снизу */
-      text-align: center; /* Выравнивание по центру */
-    }
+        .img-container {
+            margin-bottom: 20px; /* Дополнительный отступ снизу */
+            text-align: center; /* Выравнивание по центру */
+        }
 
-    .img-container img {
-      max-width: 100%; /* Максимальная ширина изображения */
-      height: auto; /* Автоматическая высота */
-    }
+        .img-container img {
+            max-width: 100%; /* Максимальная ширина изображения */
+            height: auto; /* Автоматическая высота */
+        }
 
-    .form-group {
-      margin-bottom: 20px;
-    }
+        .form-group {
+            margin-bottom: 20px;
+        }
 
-    .hidden {
-      display: none;
-    }
-  </style>
-    
-  <div class="content-container">
-    <h2>Полиномиальная регрессия</h2>
+        .hidden {
+            display: none;
+        }
+    </style>
 
-    <p>
-      Полиномиальная регрессия - это метод регрессии, который использует многочлены для аппроксимации зависимости между независимой переменной и зависимой переменной. Он является расширением линейной регрессии, позволяя моделировать более сложные взаимосвязи между переменными. Вместо линейной зависимости, полиномиальная регрессия может улавливать криволинейные и нелинейные взаимосвязи между переменными, что делает ее мощным инструментом анализа данных.
-    </p>
+    <div class="content-container">
+        <h2>Полиномиальная регрессия</h2>
 
-    <div class="img-container">
-      <img class="img-fluid rounded" src="/media/pol_media/pol_reg_gif.webp" alt="" width="600" height="400">
-    </div>
+        <p>
+            Полиномиальная регрессия - это метод регрессии, который использует многочлены для аппроксимации зависимости
+            между независимой переменной и зависимой переменной. Он является расширением линейной регрессии, позволяя
+            моделировать более сложные взаимосвязи между переменными. Вместо линейной зависимости, полиномиальная
+            регрессия может улавливать криволинейные и нелинейные взаимосвязи между переменными, что делает ее мощным
+            инструментом анализа данных.
+        </p>
 
-    <p>
-      <div class="img-container">
+        <div class="img-container">
+            <img class="img-fluid rounded" src="/media/pol_media/pol_reg_gif.webp" alt="" width="600" height="400">
+        </div>
+
+        <p>
+        <div class="img-container">
         <pre class="code-cell">
           <code>
             import pandas as pd
@@ -61,14 +65,17 @@
             X_scaled = scaler.transform(X)
           </code>
         </pre>
-      </div>
-    </p>
+        </div>
+        </p>
 
-    <p>
-        Этот код выполняет следующие действия. Он загружает данные из файла diabetes.csv и разделяет их на матрицу признаков и вектор целевой переменной. Затем он создает и обучает модель полиномиальной регрессии для предсказания вероятности возникновения диабета на основе введенных пользователем данных. После предсказания вероятности диабета для введенных данных, он вставляет эти данные в базу данных MySQL.
-    </p>
-      
-    <div class="img-container">
+        <p>
+            Этот код выполняет следующие действия. Он загружает данные из файла diabetes.csv и разделяет их на матрицу
+            признаков и вектор целевой переменной. Затем он создает и обучает модель полиномиальной регрессии для
+            предсказания вероятности возникновения диабета на основе введенных пользователем данных. После предсказания
+            вероятности диабета для введенных данных, он вставляет эти данные в базу данных MySQL.
+        </p>
+
+        <div class="img-container">
       <pre class="code-cell">
         <code>
           import matplotlib.pyplot as plt
@@ -82,76 +89,83 @@
           plt.show()
         </code>
       </pre>
+        </div>
+
+        <div id="diabetes-prediction">
+            <h1>Диабет</h1>
+            <button id="toggle-prediction-form" onclick="togglePredictionForm()">Обучить модель</button>
+            <div id="prediction-form" class="hidden">
+                <h2>Сделать прогноз</h2>
+                <div class="form-group">
+                    <label for="pregnancies">Количество беременностей:</label>
+                    <input type="number" id="pregnancies" name="pregnancies" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="glucose">Уровень глюкозы:</label>
+                    <input type="number" id="glucose" name="glucose" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="blood-pressure">Артериальное давление:</label>
+                    <input type="number" id="blood-pressure" name="blood-pressure" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="skin-thickness">Толщина кожной складки:</label>
+                    <input type="number" id="skin-thickness" name="skin-thickness" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="insulin">Инсулин:</label>
+                    <input type="number" id="insulin" name="insulin" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="bmi">ИМТ:</label>
+                    <input type="number" id="bmi" name="bmi" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="diabetes-pedigree">Генетический фактор:</label>
+                    <input type="number" id="diabetes-pedigree" name="diabetes-pedigree" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="age">Возраст:</label>
+                    <input type="number" id="age" name="age" value="0">
+                </div>
+                <button id="predict-button" onclick="makePrediction()">Сделать прогноз</button>
+                <p id="prediction-result"></p> <!-- Место для отображения результата -->
+            </div>
+        </div>
     </div>
 
-    <div id="diabetes-prediction">
-      <h1>Диабет</h1>
-      <button id="toggle-prediction-form" onclick="togglePredictionForm()">Обучить модель</button>
-      <div id="prediction-form" class="hidden">
-        <h2>Сделать прогноз</h2>
-        <div class="form-group">
-          <label for="pregnancies">Количество беременностей:</label>
-          <input type="number" id="pregnancies" name="pregnancies" value="0">
-        </div>
-        <div class="form-group">
-          <label for="glucose">Уровень глюкозы:</label>
-          <input type="number" id="glucose" name="glucose" value="0">
-        </div>
-        <div class="form-group">
-          <label for="blood-pressure">Артериальное давление:</label>
-          <input type="number" id="blood-pressure" name="blood-pressure" value="0">
-        </div>
-        <div class="form-group">
-          <label for="skin-thickness">Толщина кожной складки:</label>
-          <input type="number" id="skin-thickness" name="skin-thickness" value="0">
-        </div>
-        <div class="form-group">
-          <label for="insulin">Инсулин:</label>
-          <input type="number" id="insulin" name="insulin" value="0">
-        </div>
-        <div class="form-group">
-          <label for="bmi">ИМТ:</label>
-          <input type="number" id="bmi" name="bmi" value="0">
-        </div>
-        <div class="form-group">
-          <label for="diabetes-pedigree">Генетический фактор:</label>
-          <input type="number" id="diabetes-pedigree" name="diabetes-pedigree" value="0">
-        </div>
-        <div class="form-group">
-          <label for="age">Возраст:</label>
-          <input type="number" id="age" name="age" value="0">
-        </div>
-        <button id="predict-button" onclick="makePrediction()">Сделать прогноз</button>
-        <p id="prediction-result"></p> <!-- Место для отображения результата -->
-      </div>
-    </div>
-  </div>
+    <script>
+        function togglePredictionForm() {
+            var predictionForm = document.getElementById('prediction-form');
+            if (predictionForm.classList.contains('hidden')) {
+                predictionForm.classList.remove('hidden');
+            } else {
+                predictionForm.classList.add('hidden');
+            }
+        }
 
-<script>
-  function togglePredictionForm() {
-    var predictionForm = document.getElementById('prediction-form');
-    if (predictionForm.classList.contains('hidden')) {
-      predictionForm.classList.remove('hidden');
-    } else {
-      predictionForm.classList.add('hidden');
-    }
-  }
+        function makePrediction() {
+            var pregnancies = document.getElementById('pregnancies').value;
+            var glucose = document.getElementById('glucose').value;
+            var blood_pressure = document.getElementById('blood-pressure').value;
+            var skin_thickness = document.getElementById('skin-thickness').value;
+            var insulin = document.getElementById('insulin').value;
+            var diabetes_pedigree_function = document.getElementById('diabetes-pedigree').value;
+            var age = document.getElementById('age').value;
 
-  function makePrediction() {
-    var form = document.getElementById('prediction-form');
-    var formData = new FormData(form);
-
-    // Отправляем POST-запрос на сервер
-    fetch('/predict_diabetes/', {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-      // Отображаем результат на странице
-      document.getElementById('prediction-result').innerText = "Predicted Probability of Diabetes: " + data.probability.toFixed(2);
-    })
-    .catch(error => console.error('Error:', error));
-  }
-</script>
+            // Отправляем POST-запрос на сервер
+            fetch('/predict_diabetes/', {
+                method: 'POST',
+                body: {
+                    pregnancies, glucose, blood_pressure, skin_thickness, insulin, diabetes_pedigree_function, age
+                }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Отображаем результат на странице
+                    document.getElementById('prediction-result').innerText = "Predicted Probability of Diabetes: " + data.probability.toFixed(2);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
 {% endblock %}

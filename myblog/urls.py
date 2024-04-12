@@ -2,7 +2,7 @@
 from django.urls import path
 from .views import MainView, PostDetailView, SignUpView, SignInView, polynomial_regression_page, gradient_boosting_page, \
     SearchResultsView, train_model, predict_model, \
-    prediction_page
+    prediction_page, predict_diabetes
 from django.contrib.auth.views import LogoutView
 from django.conf import settings
 from .views import recurrent_neural_network_page
@@ -20,4 +20,5 @@ urlpatterns = [
     path('train-model/', train_model, name='train-model'),
     path('run-prediction/', predict_model, name='run-prediction'),
     path('prediction-page/', prediction_page, name='prediction-page'),
+    path('predict_diabetes/', predict_diabetes, name='predict_diabetes'),
 ]

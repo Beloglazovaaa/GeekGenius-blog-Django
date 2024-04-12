@@ -225,7 +225,7 @@ def train_model_function():
 
     return "Модель обучена и сохранена."
 
-
+@csrf_exempt
 def predict_diabetes(request):
     if request.method == 'POST':
         # Получение данных из POST-запроса
