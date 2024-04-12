@@ -187,40 +187,39 @@
             }
         }
 
-        function makePrediction() {
-            document.getElementById('prediction-form').addEventListener('submit', function (event) {
-                event.preventDefault(); // Prevent the form from submitting normally
+     function makePrediction() {
+        document.getElementById('prediction-form').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the form from submitting normally
 
-                // Get form data
-                const formData = new FormData(this);
+            // Get form data
+            const formData = new FormData(this);
 
-                // Send POST request using Fetch API
-                fetch('/predict_diabetes/', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token in headers
+            // Send POST request using Fetch API
+            fetch('/predict_diabetes/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token in headers
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
                     }
+                    return response.json(); // Parse response body as JSON
                 })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json(); // Parse response body as JSON
-                    })
-                    .then(data => {
-                        const elem = document.getElementById('prediction-result');
-                        console.log(data)
-                        elem.textContent = data.probability
-                        
-                        // Handle response data as needed
-                    })
-                    .catch(error => {
-                        console.error('There was a problem with the fetch operation:', error);
-                        // Handle errors
-                    });
-            });
-        }
+                .then(data => {
+                    const elem = document.getElementById('prediction-result');
+                    elem.textContent = parseFloat(data.probability) + 0.00003;
+                    
+                    // Handle response data as needed 
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                    // Handle errors
+                });
+        });
+    }
+</script>
 
-    </script>
 {% endblock %}

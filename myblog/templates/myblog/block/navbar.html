@@ -2,14 +2,11 @@
 <section class="my-navigation">
   <nav class="navbar navbar-expand-lg bg-body-tertiary" data-bs-theme="dark">
     <div class="container-fluid">
-      <a href="{% url 'index' %}" class="navbar-brand d-none d-lg-block mx-auto">
-        <span>GeekGenius</span>
+      <a href="{% url 'index' %}" class="navbar-brand">
+        <img src="{% static 'img/GeekGenius-logo.png' %}" class="d-inline-block align-top" alt="GeekGenius-logo" width="30" height="30">
       </a>
       <a href="{% url 'index' %}" class="navbar-brand">
-          <img src="{% static 'img/django-logo.png' %}" class="d-inline-block align-top" alt="django-logo" width="60" height="30">
-      </a>
-      <a href="{% url 'index' %}" class="navbar-brand">
-          <img src="{% static 'img/GeekGenius-logo.png' %}" class="d-inline-block align-top" alt="GeekGenius-logo" width="30" height="30">
+        <img src="{% static 'img/django-logo.png' %}" class="d-inline-block align-top" alt="django-logo" width="60" height="30">
       </a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -26,17 +23,14 @@
             <ul class="dropdown-menu" aria-labelledby="navbarDropdownBlog">
               <li><a class="dropdown-item" href="{% url 'polynomial_regression' %}">Полиномиальная регрессия</a></li>
               <li><a class="dropdown-item" href="{% url 'gradient_boosting' %}">Градиентный бустинг</a></li>
-              <li><a class="dropdown-item" href="{% url 'recurrent_neural_network' %}">Рекуррентная нейронная сеть</a></li>
+              <li><a class="dropdown-item" href="{% url 'polynomial_regression' %}">Рекурсивная нейронная сеть</a></li>
             </ul>
           </li>
         </ul>
-        <form action="{% url 'search_results' %}" method="get" class="d-flex" role="search">
-            <input name="q" class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
-            <button class="btn btn-outline-success" type="submit">Найти</button>
+        <form class="d-flex">
+          <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Поиск">
+          <button class="btn btn-outline-success" type="submit">Найти</button>
         </form>
-        <a href="{% url 'index' %}" class="navbar-brand d-lg-none">
-          <span>GeekGenius</span>
-        </a>
         {% if user.is_authenticated %}
           <div class="navbar-text ms-3">
             Привет, {{ user.username }}!
@@ -50,7 +44,6 @@
     </div>
   </nav>
 </section>
-
 
 <!-- Модальное окно для входа -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
@@ -107,7 +100,6 @@
     </div>
   </div>
 </div>
-
 
 
 
