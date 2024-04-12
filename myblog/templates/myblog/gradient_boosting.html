@@ -27,8 +27,20 @@
     .hidden {
       display: none;
     }
-  </style>
     
+        .code-cell {
+        margin-left: 0; /* Убираем отступ слева */
+        margin-right: auto; /* Выравнивание по правому краю */
+        width: auto; /* Ширина ячейки кода */
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        padding: 1px;
+        background-color: #f7f7f7;
+        font-family: monospace;
+        line-height: 1.5;
+        overflow-x: auto;
+        text-align: left; /* Выравниваем текст по левому краю */
+  </style>
 
   <div class="content-container">
     <h2>Градиентный бустинг</h2>
@@ -197,3 +209,5 @@
 </script>
 
 {% endblock %}
+
+
