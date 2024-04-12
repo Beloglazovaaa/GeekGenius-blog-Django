@@ -128,11 +128,10 @@
         </p>
 
         <div class="diabetes-prediction">
-            <h1>Диабет</h1>
+            <h1>Прогнозирование риска развития диабета</h1>
             <button id="toggle-prediction-form" onclick="togglePredictionForm()">Обучить модель</button>
             <form id="prediction-form" class="hidden">
                 {% csrf_token %}
-                <h2>Сделать прогноз</h2>
                 <div class="form-group">
                     <label for="pregnancies">Количество беременностей:</label>
                     <input type="number" id="pregnancies" name="pregnancies" value="0">
@@ -215,23 +214,6 @@
                     });
             });
         }
-
-        {#// Генерация случайного числа#}
-        {#var randomNumber = Math.random();#}
-        {##}
-        {#// Отображаем случайное число на странице#}
-        {#document.getElementById('prediction-result').innerText = "Predicted Probability of Diabetes: " + randomNumber.toFixed(2);#}
-        {##}
-        {#// Делаем кнопку недоступной#}
-        {#var predictButton = document.getElementById('predict-button');#}
-        {#predictButton.disabled = true;#}
-        {##}
-        {#document.addEventListener('DOMContentLoaded', function() {#}
-        {#var predictButton = document.getElementById('predict-button');#}
-        {#predictButton.disabled = localStorage.getItem('predictionButtonDisabled') === 'true';#}
-        {##}
-        {#predictButton.addEventListener('click', function() {#}
-        {#  localStorage.setItem('predictionButtonDisabled', 'true');#}
 
     </script>
 {% endblock %}

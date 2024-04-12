@@ -50,7 +50,7 @@
     </p>
 
     <div class="img-container">
-      <img class="img-fluid rounded" src="/media/pol_media/pol_reg_gif.webp" alt="" width="600" height="400">
+      <img class="img-fluid rounded" src="/media/boost_media/1_boost_gif.webp" alt="" width="600" height="400">
     </div>
 
     <p>
@@ -121,79 +121,93 @@
 
       </p>
 
-    <div class="diabetes-prediction">
-      <h1>Диабет</h1>
-      <button id="toggle-prediction-form" onclick="togglePredictionForm()">Обучить модель</button>
-      <div id="prediction-form" class="hidden">
-        <h2>Сделать прогноз</h2>
-        <div class="form-group">
-          <label for="pregnancies">Количество беременностей:</label>
-          <input type="number" id="pregnancies" name="pregnancies" value="0">
+        <div class="diabetes-prediction">
+            <h1>Прогнозирование риска развития диабета</h1>
+            <button id="toggle-prediction-form" onclick="togglePredictionForm()">Обучить модель</button>
+            <form id="prediction-form" class="hidden">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="pregnancies">Количество беременностей:</label>
+                    <input type="number" id="pregnancies" name="pregnancies" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="glucose">Уровень глюкозы:</label>
+                    <input type="number" id="glucose" name="glucose" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="blood-pressure">Артериальное давление:</label>
+                    <input type="number" id="blood-pressure" name="blood-pressure" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="skin-thickness">Толщина кожной складки:</label>
+                    <input type="number" id="skin-thickness" name="skin-thickness" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="insulin">Инсулин:</label>
+                    <input type="number" id="insulin" name="insulin" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="bmi">ИМТ:</label>
+                    <input type="number" id="bmi" name="bmi" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="diabetes-pedigree">Генетический фактор:</label>
+                    <input type="number" id="diabetes-pedigree" name="diabetes-pedigree" value="0">
+                </div>
+                <div class="form-group">
+                    <label for="age">Возраст:</label>
+                    <input type="number" id="age" name="age" value="0">
+                </div>
+                <button id="predict-button" onclick="makePrediction()">Сделать прогноз</button>
+                <p id="prediction-result"></p> <!-- Место для отображения результата -->
+            </form>
         </div>
-        <div class="form-group">
-          <label for="glucose">Уровень глюкозы:</label>
-          <input type="number" id="glucose" name="glucose" value="0">
-        </div>
-        <div class="form-group">
-          <label for="blood-pressure">Артериальное давление:</label>
-          <input type="number" id="blood-pressure" name="blood-pressure" value="0">
-        </div>
-        <div class="form-group">
-          <label for="skin-thickness">Толщина кожной складки:</label>
-          <input type="number" id="skin-thickness" name="skin-thickness" value="0">
-        </div>
-        <div class="form-group">
-          <label for="insulin">Инсулин:</label>
-          <input type="number" id="insulin" name="insulin" value="0">
-        </div>
-        <div class="form-group">
-          <label for="bmi">ИМТ:</label>
-          <input type="number" id="bmi" name="bmi" value="0">
-        </div>
-        <div class="form-group">
-          <label for="diabetes-pedigree">Генетический фактор:</label>
-          <input type="number" id="diabetes-pedigree" name="diabetes-pedigree" value="0">
-        </div>
-        <div class="form-group">
-          <label for="age">Возраст:</label>
-          <input type="number" id="age" name="age" value="0">
-        </div>
-        <button id="predict-button" onclick="makePrediction()">Сделать прогноз</button>
-        <p id="prediction-result"></p> <!-- Место для отображения результата -->
-      </div>
     </div>
-  </div>
 
-<script>
-  function togglePredictionForm() {
-    var predictionForm = document.getElementById('prediction-form');
-    if (predictionForm.classList.contains('hidden')) {
-      predictionForm.classList.remove('hidden');
-    } else {
-      predictionForm.classList.add('hidden');
-    }
-  }
+    <script>
+        function togglePredictionForm() {
+            var predictionForm = document.getElementById('prediction-form');
+            if (predictionForm.classList.contains('hidden')) {
+                predictionForm.classList.remove('hidden');
+            } else {
+                predictionForm.classList.add('hidden');
+            }
+        }
 
-    function makePrediction() {
-  // Генерация случайного числа
-  var randomNumber = Math.random();
-  
-  // Отображаем случайное число на странице
-  document.getElementById('prediction-result').innerText = "Predicted Probability of Diabetes: " + randomNumber.toFixed(2);
-  
-  // Делаем кнопку недоступной
-  var predictButton = document.getElementById('predict-button');
-  predictButton.disabled = true;
-  
-  document.addEventListener('DOMContentLoaded', function() {
-  var predictButton = document.getElementById('predict-button');
-  predictButton.disabled = localStorage.getItem('predictionButtonDisabled') === 'true';
+        function makePrediction() {
+            document.getElementById('prediction-form').addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent the form from submitting normally
 
-  predictButton.addEventListener('click', function() {
-    localStorage.setItem('predictionButtonDisabled', 'true');
-  });
-  });
+                // Get form data
+                const formData = new FormData(this);
 
-}
-</script>
+                // Send POST request using Fetch API
+                fetch('/predict_diabetes/', {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token in headers
+                    }
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json(); // Parse response body as JSON
+                    })
+                    .then(data => {
+                        const elem = document.getElementById('prediction-result');
+                        console.log(data)
+                        elem.textContent = data.probability
+                        
+                        // Handle response data as needed
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                        // Handle errors
+                    });
+            });
+        }
+        
+    </script>
 {% endblock %}
