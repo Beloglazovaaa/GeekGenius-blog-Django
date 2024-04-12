@@ -6,6 +6,8 @@ from .views import MainView, PostDetailView, SignUpView, SignInView, polynomial_
 from django.contrib.auth.views import LogoutView
 from django.conf import settings
 from .views import recurrent_neural_network_page
+from django.urls import path
+from . import views
 
 urlpatterns = [
     path('', MainView.as_view(), name='index'),
@@ -20,4 +22,7 @@ urlpatterns = [
     path('train-model/', train_model, name='train-model'),
     path('run-prediction/', predict_model, name='run-prediction'),
     path('prediction-page/', prediction_page, name='prediction-page'),
+    path('predict_diabetes/', views.predict_diabetes, name='predict_diabetes'),
+    path('get_latest_diabetes_prediction/', views.get_latest_diabetes_prediction, name='get_latest_diabetes_prediction'),
 ]
+

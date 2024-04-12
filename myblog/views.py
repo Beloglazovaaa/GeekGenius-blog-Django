@@ -271,3 +271,20 @@ def predict_diabetes(request):
         return JsonResponse({'probability': probability})
     else:
         return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+from django.http import JsonResponse
+from .models import DiabetesModel
+
+def get_latest_diabetes_prediction(request):
+    if request.method == 'GET':
+        # Получаем последнюю запись из таблицы DiabetesModel
+        latest_prediction = DiabetesModel.objects.latest('id')
+
+        # Формируем JSON-ответ с последним результатом
+        response_data = {
+            'probability': latest_prediction.probability
+        }
+
+        # Возвращаем JSON-ответ
+        return JsonResponse(response_data)

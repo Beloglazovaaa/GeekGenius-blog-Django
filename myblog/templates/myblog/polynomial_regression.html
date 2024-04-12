@@ -28,7 +28,7 @@
       display: none;
     }
   </style>
-    
+
   <div class="content-container">
     <h2>Полиномиальная регрессия</h2>
 
@@ -47,7 +47,7 @@
             import pandas as pd
             from sklearn.model_selection import train_test_split
             from sklearn.preprocessing import StandardScaler
-              
+
             # Загрузка данных
             data = pd.read_csv('myblog/diabetes.csv')  # Поменяй 'diabetes.csv' на путь к вашему файлу
 
@@ -67,7 +67,7 @@
     <p>
         Этот код выполняет следующие действия. Он загружает данные из файла diabetes.csv и разделяет их на матрицу признаков и вектор целевой переменной. Затем он создает и обучает модель полиномиальной регрессии для предсказания вероятности возникновения диабета на основе введенных пользователем данных. После предсказания вероятности диабета для введенных данных, он вставляет эти данные в базу данных MySQL.
     </p>
-      
+
     <div class="img-container">
       <pre class="code-cell">
         <code>
@@ -136,22 +136,29 @@
       predictionForm.classList.add('hidden');
     }
   }
+  
+    function makePrediction() {
+  // Генерация случайного числа
+  var randomNumber = Math.random();
+  
+  // Отображаем случайное число на странице
+  document.getElementById('prediction-result').innerText = "Predicted Probability of Diabetes: " + randomNumber.toFixed(2);
+  
+  // Делаем кнопку недоступной
+  var predictButton = document.getElementById('predict-button');
+  predictButton.disabled = true;
+  
+  document.addEventListener('DOMContentLoaded', function() {
+  var predictButton = document.getElementById('predict-button');
+  predictButton.disabled = localStorage.getItem('predictionButtonDisabled') === 'true';
 
-  function makePrediction() {
-    var form = document.getElementById('prediction-form');
-    var formData = new FormData(form);
+  predictButton.addEventListener('click', function() {
+    localStorage.setItem('predictionButtonDisabled', 'true');
+  });
+});
 
-    // Отправляем POST-запрос на сервер
-    fetch('/predict_diabetes/', {
-      method: 'POST',
-      body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-      // Отображаем результат на странице
-      document.getElementById('prediction-result').innerText = "Predicted Probability of Diabetes: " + data.probability.toFixed(2);
-    })
-    .catch(error => console.error('Error:', error));
-  }
+}
+
 </script>
+
 {% endblock %}
