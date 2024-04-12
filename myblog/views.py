@@ -184,3 +184,43 @@ def train_model_function():
     joblib.dump(model, 'linear_regression_model.pkl')
 
     return "Модель обучена и сохранена."
+
+
+
+
+
+from django.shortcuts import render
+from django.http import JsonResponse
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+import pandas as pd
+import json
+
+# Загрузка данных
+data = pd.read_csv('myblog/diabetes.csv')  # Поменяй 'diabetes.csv' на путь к вашему файлу
+
+# Разделение данных на признаки (X) и целевую переменную (y)
+X = data.drop('Outcome', axis=1)
+y = data['Outcome']
+
+# Масштабирование признаков
+scaler = StandardScaler()
+scaler.fit(X)
+X_scaled = scaler.transform(X)
+
+# Создание и обучение модели логистической регрессии
+model = LogisticRegression()
+model.fit(X_scaled, y)
+
+def predict_diabetes(request):
+    if request.method == 'POST':
+        user_data = json.loads(request.body)
+        # Масштабирование введенных пользователем данных
+        user_data_scaled = scaler.transform([list(user_data.values())])
+
+        # Предсказание вероятности возникновения диабета
+        probability = model.predict_proba(user_data_scaled)[:, 1][0]
+        return JsonResponse({'predicted_probability': probability})
+
+    return JsonResponse({'error': 'Invalid request method'})
+
