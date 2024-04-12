@@ -189,38 +189,85 @@ def train_model_function():
 
 
 
-from django.shortcuts import render
-from django.http import JsonResponse
+from sklearn.datasets import make_regression
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+import joblib
+
+import warnings
+from .models import DiabetesModel
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
-import json
 
-# Загрузка данных
-data = pd.read_csv('myblog/diabetes.csv')  # Поменяй 'diabetes.csv' на путь к вашему файлу
 
-# Разделение данных на признаки (X) и целевую переменную (y)
-X = data.drop('Outcome', axis=1)
-y = data['Outcome']
+# Отключение предупреждений
+warnings.filterwarnings("ignore")
 
-# Масштабирование признаков
-scaler = StandardScaler()
-scaler.fit(X)
-X_scaled = scaler.transform(X)
 
-# Создание и обучение модели логистической регрессии
-model = LogisticRegression()
-model.fit(X_scaled, y)
+def polynomial_regression_page(request):
+    return render(request, 'myblog/polynomial_regression.html')
+
+
+def train_model_function():
+    # Генерация симуляционных данных
+    X, y = make_regression(n_samples=100, n_features=1, noise=0.1)
+
+    # Разделение данных на обучающую и тестовую выборку
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Создание и обучение модели
+    model = LinearRegression()
+    model.fit(X_train, y_train)
+
+    # Сохранение обученной модели для последующего использования
+    joblib.dump(model, 'linear_regression_model.pkl')
+
+    return "Модель обучена и сохранена."
+
 
 def predict_diabetes(request):
     if request.method == 'POST':
-        user_data = json.loads(request.body)
+        # Получение данных из POST-запроса
+        pregnancies = float(request.POST.get('pregnancies'))
+        glucose = float(request.POST.get('glucose'))
+        blood_pressure = float(request.POST.get('blood_pressure'))
+        skin_thickness = float(request.POST.get('skin_thickness'))
+        insulin = float(request.POST.get('insulin'))
+        bmi = float(request.POST.get('bmi'))
+        diabetes_pedigree_function = float(request.POST.get('diabetes_pedigree_function'))
+        age = float(request.POST.get('age'))
+
+        # Загрузка данных для модели логистической регрессии
+        data = pd.read_csv('myblog/diabetes.csv')
+
+        # Разделение данных на признаки (X) и целевую переменную (y)
+        X = data.drop('Outcome', axis=1)
+        y = data['Outcome']
+
+        # Масштабирование признаков
+        scaler = StandardScaler()
+        scaler.fit(X)
+        X_scaled = scaler.transform(X)
+
+        # Создание и обучение модели логистической регрессии
+        model = LogisticRegression()
+        model.fit(X_scaled, y)
+
         # Масштабирование введенных пользователем данных
-        user_data_scaled = scaler.transform([list(user_data.values())])
+        user_data = scaler.transform(
+            [[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]])
 
         # Предсказание вероятности возникновения диабета
-        probability = model.predict_proba(user_data_scaled)[:, 1][0]
-        return JsonResponse({'predicted_probability': probability})
+        probability = model.predict_proba(user_data)[:, 1][0]
 
-    return JsonResponse({'error': 'Invalid request method'})
+        # Сохранение предсказанных данных в базе данных
+        DiabetesModel.objects.create(pregnancies=pregnancies, glucose=glucose, blood_pressure=blood_pressure,
+                                     skin_thickness=skin_thickness, insulin=insulin, bmi=bmi,
+                                     diabetes_pedigree_function=diabetes_pedigree_function, age=age,
+                                     probability=probability)
 
+        # Возврат предсказанной вероятности диабета в формате JSON
+        return JsonResponse({'probability': probability})
+    else:
+        return JsonResponse({'error': 'Method not allowed'}, status=405)

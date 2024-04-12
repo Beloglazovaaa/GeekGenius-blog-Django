@@ -47,52 +47,27 @@
             import pandas as pd
             from sklearn.model_selection import train_test_split
             from sklearn.preprocessing import StandardScaler
+              
             # Загрузка данных
-            data = pd.read_csv('boston-housing-dataset.csv')
-            # Разделение на признаки и целевую переменную
-            X = data.drop('MEDV', axis=1)
-            y = data['MEDV']
-            # Разделение на обучающую и тестовую выборки
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+            data = pd.read_csv('myblog/diabetes.csv')  # Поменяй 'diabetes.csv' на путь к вашему файлу
+
+            # Разделение данных на признаки (X) и целевую переменную (y)
+            X = data.drop('Outcome', axis=1)
+            y = data['Outcome']
+
             # Масштабирование признаков
             scaler = StandardScaler()
-            X_train_scaled = scaler.fit_transform(X_train)
-            X_test_scaled = scaler.transform(X_test)
+            scaler.fit(X)
+            X_scaled = scaler.transform(X)
           </code>
         </pre>
       </div>
     </p>
 
     <p>
-      Создаем полиномиальные признаки с помощью PolynomialFeatures и обучаем модель линейной регрессии на полученных признаках. Затем модель используется для предсказания цен на жилье на тестовой выборке. Оценка качества модели происходит с помощью среднеквадратичной ошибки (MSE).
+        Этот код выполняет следующие действия. Он загружает данные из файла diabetes.csv и разделяет их на матрицу признаков и вектор целевой переменной. Затем он создает и обучает модель полиномиальной регрессии для предсказания вероятности возникновения диабета на основе введенных пользователем данных. После предсказания вероятности диабета для введенных данных, он вставляет эти данные в базу данных MySQL.
     </p>
-
-    <div class="img-container">
-      <pre class="code-cell">
-        <code>
-          from sklearn.preprocessing import PolynomialFeatures 
-          from sklearn.linear_model import LinearRegression 
-          from sklearn.metrics import mean_squared_error
-          # Создание полиномиальных признаков
-          poly = PolynomialFeatures(degree=2)
-          X_train_poly = poly.fit_transform(X_train_scaled)
-          X_test_poly = poly.transform(X_test_scaled)
-          # Обучение модели
-          model_poly = LinearRegression()
-          model_poly.fit(X_train_poly, y_train)
-          # Предсказание на тестовой выборке
-          y_pred_poly = model_poly.predict(X_test_poly)
-          # Оценка качества модели
-          mse_poly = mean_squared_error(y_test, y_pred_poly)
-          print("Mean Squared Error (Polynomial Regression):", mse_poly)
-        </code>
-      </pre>
-    </div>
-
-    <p>
-      Выводится значение среднеквадратичной ошибки (MSE), чтобы оценить качество модели. Для визуализации результатов можно построить график, где по оси X будут настоящие цены на жилье, а по оси Y - предсказанные цены на жилье. Чем ближе точки к диагонали, тем лучше модель.
-    </p>
-
+      
     <div class="img-container">
       <pre class="code-cell">
         <code>
@@ -147,27 +122,36 @@
           <input type="number" id="age" name="age" value="0">
         </div>
         <button id="predict-button" onclick="makePrediction()">Сделать прогноз</button>
-        <p id="prediction-result"></p>
+        <p id="prediction-result"></p> <!-- Место для отображения результата -->
       </div>
     </div>
   </div>
 
-  <script>
-    function togglePredictionForm() {
-      var predictionForm = document.getElementById('prediction-form');
-      if (predictionForm.classList.contains('hidden')) {
-        predictionForm.classList.remove('hidden');
-      } else {
-        predictionForm.classList.add('hidden');
-      }
+<script>
+  function togglePredictionForm() {
+    var predictionForm = document.getElementById('prediction-form');
+    if (predictionForm.classList.contains('hidden')) {
+      predictionForm.classList.remove('hidden');
+    } else {
+      predictionForm.classList.add('hidden');
     }
+  }
 
-    function makePrediction() {
-      // Генерируем случайное число от 0 до 1
-      var randomProbability = Math.random();
+  function makePrediction() {
+    var form = document.getElementById('prediction-form');
+    var formData = new FormData(form);
 
+    // Отправляем POST-запрос на сервер
+    fetch('/predict_diabetes/', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
       // Отображаем результат на странице
-      document.getElementById('prediction-result').innerText = "Predicted Probability of Diabetes: " + randomProbability.toFixed(2);
-    }
-  </script>
+      document.getElementById('prediction-result').innerText = "Predicted Probability of Diabetes: " + data.probability.toFixed(2);
+    })
+    .catch(error => console.error('Error:', error));
+  }
+</script>
 {% endblock %}
