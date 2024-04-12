@@ -17,8 +17,10 @@ import json
 def polynomial_regression_page(request):
     return render(request, 'myblog/polynomial_regression.html')
 
+
 def gradient_boosting_page(request):
     return render(request, 'myblog/gradient_boosting.html')
+
 
 def recurrent_neural_network_page(request):
     return render(request, 'myblog/recurrent_neural_network.html')
@@ -49,6 +51,7 @@ def train_model(request):
     joblib.dump(model, 'linear_regression_model.pkl')
 
     return JsonResponse({"message": "Модель успешно обучена."})
+
 
 @csrf_exempt
 def predict_model(request):
@@ -94,6 +97,7 @@ class PostDetailView(View):
         return render(request, 'myblog/post_detail.html', context={
             'post': post
         })
+
 
 class SignUpView(View):
     def get(self, request, *args, **kwargs):
@@ -143,6 +147,7 @@ class LogoutView(View):
         logout(request)
         return redirect('index')  # Перенаправляем на главную страницу после выхода
 
+
 class SearchResultsView(View):
     def get(self, request, *args, **kwargs):
         query = request.GET.get('q')
@@ -160,7 +165,6 @@ class SearchResultsView(View):
             'results': page_obj,
             'count': paginator.count
         })
-
 
 
 from sklearn.datasets import make_regression
@@ -186,9 +190,6 @@ def train_model_function():
     return "Модель обучена и сохранена."
 
 
-
-
-
 from sklearn.datasets import make_regression
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
@@ -199,7 +200,6 @@ from .models import DiabetesModel
 from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
-
 
 # Отключение предупреждений
 warnings.filterwarnings("ignore")
@@ -225,56 +225,55 @@ def train_model_function():
 
     return "Модель обучена и сохранена."
 
+
 @csrf_exempt
 def predict_diabetes(request):
-    if request.method == 'POST':
-        # Получение данных из POST-запроса
-        pregnancies = float(request.POST.get('pregnancies'))
-        glucose = float(request.POST.get('glucose'))
-        blood_pressure = float(request.POST.get('blood_pressure'))
-        skin_thickness = float(request.POST.get('skin_thickness'))
-        insulin = float(request.POST.get('insulin'))
-        bmi = float(request.POST.get('bmi'))
-        diabetes_pedigree_function = float(request.POST.get('diabetes_pedigree_function'))
-        age = float(request.POST.get('age'))
+    # Получение данных из POST-запроса
+    pregnancies = float(request.POST.get('pregnancies'))
+    glucose = float(request.POST['glucose'])
+    blood_pressure = float(request.POST.get('blood-pressure'))
+    skin_thickness = float(request.POST.get('skin-thickness'))
+    insulin = float(request.POST.get('insulin'))
+    bmi = float(request.POST.get('bmi'))
+    diabetes_pedigree_function = float(request.POST.get('diabetes-pedigree'))
+    age = float(request.POST.get('age'))
 
-        # Загрузка данных для модели логистической регрессии
-        data = pd.read_csv('myblog/diabetes.csv')
+    # Загрузка данных для модели логистической регрессии
+    data = pd.read_csv('myblog/diabetes.csv')
 
-        # Разделение данных на признаки (X) и целевую переменную (y)
-        X = data.drop('Outcome', axis=1)
-        y = data['Outcome']
+    # Разделение данных на признаки (X) и целевую переменную (y)
+    X = data.drop('Outcome', axis=1)
+    y = data['Outcome']
 
-        # Масштабирование признаков
-        scaler = StandardScaler()
-        scaler.fit(X)
-        X_scaled = scaler.transform(X)
+    # Масштабирование признаков
+    scaler = StandardScaler()
+    scaler.fit(X)
+    X_scaled = scaler.transform(X)
 
-        # Создание и обучение модели логистической регрессии
-        model = LogisticRegression()
-        model.fit(X_scaled, y)
+    # Создание и обучение модели логистической регрессии
+    model = LogisticRegression()
+    model.fit(X_scaled, y)
 
-        # Масштабирование введенных пользователем данных
-        user_data = scaler.transform(
-            [[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]])
+    # Масштабирование введенных пользователем данных
+    user_data = scaler.transform(
+        [[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]])
 
-        # Предсказание вероятности возникновения диабета
-        probability = model.predict_proba(user_data)[:, 1][0]
+    # Предсказание вероятности возникновения диабета
+    probability = model.predict_proba(user_data)[:, 1][0]
 
-        # Сохранение предсказанных данных в базе данных
-        DiabetesModel.objects.create(pregnancies=pregnancies, glucose=glucose, blood_pressure=blood_pressure,
-                                     skin_thickness=skin_thickness, insulin=insulin, bmi=bmi,
-                                     diabetes_pedigree_function=diabetes_pedigree_function, age=age,
-                                     probability=probability)
+    # Сохранение предсказанных данных в базе данных
+    DiabetesModel.objects.create(pregnancies=pregnancies, glucose=glucose, bloodpressure=blood_pressure,
+                                 skinthickness=skin_thickness, insulin=insulin, bmi=bmi,
+                                 diabetespedigreefunction=diabetes_pedigree_function, age=age,
+                                 probability=probability)
 
-        # Возврат предсказанной вероятности диабета в формате JSON
-        return JsonResponse({'probability': probability})
-    else:
-        return JsonResponse({'error': 'Method not allowed'}, status=405)
+    # Возврат предсказанной вероятности диабета в формате JSON
+    return JsonResponse({'probability': probability})
 
 
 from django.http import JsonResponse
 from .models import DiabetesModel
+
 
 def get_latest_diabetes_prediction(request):
     if request.method == 'GET':

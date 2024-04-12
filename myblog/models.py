@@ -13,11 +13,11 @@ class DataModel(models.Model):
 class DiabetesModel(models.Model):
     pregnancies = models.FloatField()
     glucose = models.FloatField()
-    blood_pressure = models.FloatField()
-    skin_thickness = models.FloatField()
+    bloodpressure = models.FloatField()
+    skinthickness = models.FloatField()
     insulin = models.FloatField()
     bmi = models.FloatField()
-    diabetes_pedigree_function = models.FloatField()
+    diabetespedigreefunction = models.FloatField()
     age = models.FloatField()
     probability = models.FloatField()
 

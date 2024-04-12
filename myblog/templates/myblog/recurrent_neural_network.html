@@ -1,6 +1,6 @@
 {% extends 'myblog/base.html' %}
 
-{% block title %}Полиномиальная регрессия{% endblock %}
+{% block title %}Рекуррентная нейронная сеть{% endblock %}
 
 {% block content %}
   <style>
@@ -27,111 +27,114 @@
     .hidden {
       display: none;
     }
+    
+        .code-cell {
+        margin-left: 0; /* Убираем отступ слева */
+        margin-right: auto; /* Выравнивание по правому краю */
+        width: auto; /* Ширина ячейки кода */
+        border: 1px solid #ccc;
+        border-radius: 2px;
+        padding: 1px;
+        background-color: #f7f7f7;
+        font-family: monospace;
+        line-height: 1.5;
+        overflow-x: auto;
+        text-align: left; /* Выравниваем текст по левому краю */
   </style>
     
-
   <div class="content-container">
     <h2>Рекуррентная нейронная сеть</h2>
 
     <p>
-    Рекуррентная нейронная сеть (RNN) - это класс нейронных сетей, который способен обрабатывать последовательные входные данные, учитывая их контекст и предыдущие состояния. RNN имеет внутреннее состояние или память, которое обновляется при обработке каждого элемента последовательности. Это позволяет RNN моделировать зависимости в данных, которые имеют последовательную структуру, такие как временные ряды, естественный язык и многое другое.    </p>
+    Рекуррентная нейронная сеть (RNN) — это класс нейронных сетей, который специализируется на обработке последовательных данных. Основная их особенность состоит в том, что они имеют обратные связи, что позволяет им учитывать контекст и историю входных данных.
+
+    В отличие от стандартных нейронных сетей, где данные рассматриваются как независимые друг от друга, в RNN данные рассматриваются как последовательность, где каждый элемент связан с предыдущими элементами.
+
+    Классическая архитектура RNN состоит из повторяющегося слоя нейронов, который используется несколько раз для обработки каждого элемента последовательности входных данных. Этот слой сохраняет внутреннее состояние (hidden state), которое представляет собой информацию о предыдущих элементах последовательности и передается на следующий шаг обработки. Это позволяет RNN учитывать контекст и динамику данных.    </p>
 
     <div class="img-container">
-      <img class="img-fluid rounded" src="/media/neural_media/1_neu_gif.webp" alt="" width="600" height="400">
+      <img class="img-fluid rounded" src="/media/pol_media/pol_reg_gif.webp" alt="" width="600" height="400">
     </div>
 
     <p>
-    Для реализации рекуррентной нейронной сети на основе датасета из Kaggle, мы используем библиотеки машинного обучения, такие как TensorFlow и Keras, специализированные на разработке и обучении нейронных сетей, а также библиотеку pandas для работы с данными.
+      <div class="img-container">
+        <pre class="code-cell">
+          <code>
+    import warnings
+    from .models import DiabetesModel
+
+    import pandas as pd
+    import numpy as np
+    from sklearn.preprocessing import StandardScaler
+    from tensorflow.keras.models import Sequential
+    from tensorflow.keras.layers import Dense, SimpleRNN
+
+    # Загрузка данных
+    data = pd.read_csv('myblog/diabetes.csv')
+
+    # Разделение данных на признаки (X) и целевую переменную (y)
+    X = data.drop('Outcome', axis=1).values
+    y = data['Outcome'].values
+
+    # Масштабирование признаков
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    # Преобразование данных в последовательности
+    sequence_length = 8  # Длина последовательности
+    X_sequences = []
+    for i in range(len(X_scaled) - sequence_length + 1):
+        X_sequences.append(X_scaled[i:i + sequence_length])
+
+    X_sequences = np.array(X_sequences)
+
+    # Создание и обучение модели RNN
+    model = Sequential([
+        SimpleRNN(units=32, input_shape=(sequence_length, X.shape[1])),
+        Dense(1, activation='sigmoid')
+    ])
+
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+    model.fit(X_sequences, y, epochs=10, batch_size=32)
+
+    def predict_diabetes():
+        print("Введите значения для всех признаков:")
+        pregnancies = float(input("Количество беременностей: "))
+        glucose = float(input("Уровень глюкозы: "))
+        blood_pressure = float(input("Артериальное давление: "))
+        skin_thickness = float(input("Толщина кожной складки: "))
+        insulin = float(input("Инсулин: "))
+        bmi = float(input("ИМТ: "))
+        diabetes_pedigree_function = float(input("Генетический фактор: "))
+        age = float(input("Возраст: "))
+
+        user_data = np.array([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi,
+                               diabetes_pedigree_function, age]])
+        user_data_scaled = scaler.transform(user_data)
+        user_data_sequence = np.expand_dims(user_data_scaled, axis=0)
+
+        # Предсказание вероятности возникновения диабета
+        probability = model.predict(user_data_sequence)[0][0]
+        DiabetesModel.objects.create(pregnancies=pregnancies, glucose=glucose, blood_pressure=blood_pressure,
+                                     skin_thickness=skin_thickness, insulin=insulin, bmi=bmi,
+                                     diabetes_pedigree_function=diabetes_pedigree_function, age=age,
+                                     probability=probability)
+        return probability
+
+    # Пример использования функции для предсказания вероятности диабета у пациента
+    predicted_probability = predict_diabetes()
+    print("Predicted Probability of Diabetes:", predicted_probability)
+
+          </code>
+        </pre>
+      </div>
     </p>
 
     <p>
-    В качестве датасета мы выбрали данные о ценах на жилье в <a href="https://www.kaggle.com/datasets/simpleparadox/bostonhousingdataset?resource=download">Boston (Boston Housing Prices dataset)</a> из Kaggle. Разделяем данные на признаки (X) и целевую переменную (y). Для эффективного обучения модели признаки масштабируются с использованием StandardScaler(), что помогает привести их к одному масштабу и ускоряет процесс обучения.
+    В этом коде осуществляется анализ данных о диабете с использованием рекуррентной нейронной сети (RNN). Вначале данные загружаются из CSV-файла и масштабируются для обеспечения одинакового диапазона значений. Затем данные преобразуются в последовательности, которые затем подаются на вход RNN. Модель RNN обучается предсказывать вероятность диабета на основе введенных параметров, таких как количество беременностей, уровень глюкозы и другие. После обучения модели пользователю предлагается ввести свои данные, и на основе этого модель делает прогноз вероятности развития диабета. Полученное значение вероятности выводится на экран.
     </p>
 
-    <div class="img-container">
-      <pre class="code-cell">
-        <code>
-        from sklearn.model_selection import train_test_split from sklearn.preprocessing import StandardScaler
-        # Разделение на обучающую и тестовую выборки
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-        # Масштабирование признаков
-        scaler = StandardScaler (
-        X_train_scaled = scaler. fit_transform(X_train)
-        X_test_scaled = scaler. transform (X_test)
-        </code>
-      </pre>
-    </div>
-
-    <p>
-    Преобразуем данные для подачи в рекуррентную нейронную сеть. Для этого мы используем метод reshape() из библиотеки numpy, чтобы преобразовать данные в трехмерный массив, необходимый для работы с рекуррентными нейронными сетями.
-    </p>
-
-    <div class="img-container">
-      <pre class="code-cell">
-        <code>
-        import numpy as np
-        # Преобразование данных для рекуррентной нейронной сети
-        num_samples, num_features = X_train_scaled. shape
-        X_train_reshaped = X_train_scaled. reshape(num_samples, 1, num_features)
-        num_samples_test, - = X_test_scaled. shape
-        X_test_reshaped = X_test_scaled. reshape(num_samples_test, 1, num_features)
-        </code>
-      </pre>
-    </div>
-
-    <p>
-    Создаем модель рекуррентной нейронной сети с одним слоем SimpleRNN и одним выходным слоем Dense. Первый слой SimpleRNN использует функцию активации ReLU, а выходной слой не имеет функции активации, поскольку решается задача регрессии. Затем мы компилируем модель, указывая оптимизатор и функцию потерь.
-    </p>
-
-    <div class="img-container">
-      <pre class="code-cell">
-        <code>
-        from tensorflow.keras.models import Sequential from tensorflow.keras. layers import SimpleRNN, Dense
-        # Создание модели рекуррентной нейронной сети
-        model = Sequential(I
-        SimpleRNN(64, input_shape=(1, num_features), activation='relu'), Dense (1)
-        # Компиляция модели
-        model. compile(optimizer='adam', loss='mean_squared_error')
-        </code>
-      </pre>
-    </div>
-
-    <p>
-    Строим график обучения, отображая значения функции потерь на обучающей и валидационной выборках в зависимости от числа эпох обучения. Это позволяет нам оценить процесс обучения модели и проверить, есть ли переобучение или недообучение.
-    </p>
-
-    <div class="img-container">
-      <pre class="code-cell">
-        <code>
-        history = model.fit(X_train_reshaped, _train, epochs=10, validation_split=0.2)
-        import matplotlib.pyplot as plt
-        plt.plot(history.history['loss'], label='Training Loss')
-        plt.plot(history.history['val_loss'], label='Validation Loss')
-        plt. xlabel( 'Epochs')
-        plt.ylabel( 'Loss')
-        plt. legend ( )
-        plt. show()
-        </code>
-      </pre>
-    </div>
-
-    <p>
-    <div class="img-container">
-      <img class="img-fluid rounded" src="/media/neural_media/6_neu.png" alt="" width="600" height="400">
-    </div>
-
-    <p>
-
-    <div class="img-container">
-      <img class="img-fluid rounded" src="/media/neural_media/7_neu.png" alt="" width="600" height="400">
-    </div>
-
-    <p>
-    Вывод: Рекуррентная нейронная сеть успешно обучена на данных о ценах на жилье в Бостоне и показала хорошие результаты в прогнозировании цен. График обучения демонстрирует, что модель быстро сходится и не наблюдается переобучения. Это подтверждает эффективность применения рекуррентных нейронных сетей в задачах анализа временных последовательностей.
-    </p>
-  </div>
-    
-    <div id="diabetes-prediction">
+    <div class="diabetes-prediction">
       <h1>Диабет</h1>
       <button id="toggle-prediction-form" onclick="togglePredictionForm()">Обучить модель</button>
       <div id="prediction-form" class="hidden">
@@ -183,7 +186,7 @@
       predictionForm.classList.add('hidden');
     }
   }
-  
+
     function makePrediction() {
   // Генерация случайного числа
   var randomNumber = Math.random();
@@ -202,10 +205,8 @@
   predictButton.addEventListener('click', function() {
     localStorage.setItem('predictionButtonDisabled', 'true');
   });
-});
+  });
 
 }
-
 </script>
-
-{% endblock %}cc
+{% endblock %}
