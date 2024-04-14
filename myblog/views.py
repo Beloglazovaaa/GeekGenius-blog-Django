@@ -110,12 +110,13 @@ class SignUpView(View):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            if user is not None:
-                login(request, user)
-                return HttpResponseRedirect('/')
-        return render(request, 'myblog/signup.html', context={
-            'form': form,
-        })
+            # if user is not None:
+            # login(request, user)
+            return HttpResponseRedirect('/')
+        else:
+            return render(request, 'myblog/signup.html', context={
+                'form': form,
+            })
 
 
 class SignInView(View):
