@@ -13,12 +13,18 @@ import numpy as np
 from django.views.decorators.csrf import csrf_exempt
 import json
 
+
 def polynomial_regression_page(request):
     return render(request, 'myblog/polynomial_regression.html')
+
+
 def gradient_boosting_page(request):
     return render(request, 'myblog/gradient_boosting.html')
+
+
 def recurrent_neural_network_page(request):
     return render(request, 'myblog/recurrent_neural_network.html')
+
 
 class MainView(View):
     def get(self, request, *args, **kwargs):
@@ -52,13 +58,12 @@ class SignUpView(View):
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save()
-            # if user is not None:
-            # login(request, user)
-            return HttpResponseRedirect('/')
-        else:
-            return render(request, 'myblog/signup.html', context={
-                'form': form,
-            })
+            if user is not None:
+                login(request, user)
+                return HttpResponseRedirect('/')
+        return render(request, 'myblog/signup.html', context={
+            'form': form,
+        })
 
 
 class SignInView(View):
@@ -193,6 +198,7 @@ def predict_diabetes(request):
 
 from django.http import JsonResponse
 from .models import DiabetesModel
+
 
 def get_latest_diabetes_prediction(request):
     if request.method == 'GET':

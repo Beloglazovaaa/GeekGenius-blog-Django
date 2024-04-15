@@ -129,43 +129,43 @@
 
         <div class="diabetes-prediction">
             <h1>Прогнозирование риска развития диабета</h1>
-            <button id="toggle-prediction-form" onclick="togglePredictionForm()">Обучить модель</button>
+            <button class="btn btn-primary" onclick="togglePredictionForm()">Обучить модель</button>
             <form id="prediction-form" class="hidden">
                 {% csrf_token %}
                 <div class="form-group">
-                    <label for="pregnancies">Количество беременностей:</label>
-                    <input type="number" id="pregnancies" name="pregnancies" value="0">
+                    <label for="pregnancies" class="form-label">Количество беременностей:</label>
+                    <input class="form-control" type="number" id="pregnancies" name="pregnancies" value="0">
                 </div>
                 <div class="form-group">
-                    <label for="glucose">Уровень глюкозы:</label>
-                    <input type="number" id="glucose" name="glucose" value="0">
+                    <label for="glucose" class="form-label">Уровень глюкозы:</label>
+                    <input class="form-control" type="number" id="glucose" name="glucose" value="0">
                 </div>
                 <div class="form-group">
-                    <label for="blood-pressure">Артериальное давление:</label>
-                    <input type="number" id="blood-pressure" name="blood-pressure" value="0">
+                    <label for="blood-pressure" class="form-label">Артериальное давление:</label>
+                    <input class="form-control" type="number" id="blood-pressure" name="blood-pressure" value="0">
                 </div>
                 <div class="form-group">
-                    <label for="skin-thickness">Толщина кожной складки:</label>
-                    <input type="number" id="skin-thickness" name="skin-thickness" value="0">
+                    <label for="skin-thickness" class="form-label">Толщина кожной складки:</label>
+                    <input class="form-control" type="number" id="skin-thickness" name="skin-thickness" value="0">
                 </div>
                 <div class="form-group">
-                    <label for="insulin">Инсулин:</label>
-                    <input type="number" id="insulin" name="insulin" value="0">
+                    <label for="insulin" class="form-label">Инсулин:</label>
+                    <input class="form-control" type="number" id="insulin" name="insulin" value="0">
                 </div>
                 <div class="form-group">
-                    <label for="bmi">ИМТ:</label>
-                    <input type="number" id="bmi" name="bmi" value="0">
+                    <label for="bmi" class="form-label">ИМТ:</label>
+                    <input class="form-control" type="number" id="bmi" name="bmi" value="0">
                 </div>
                 <div class="form-group">
-                    <label for="diabetes-pedigree">Генетический фактор:</label>
-                    <input type="number" id="diabetes-pedigree" name="diabetes-pedigree" value="0">
+                    <label for="diabetes-pedigree" class="form-label">Генетический фактор:</label>
+                    <input class="form-control" type="number" id="diabetes-pedigree" name="diabetes-pedigree" value="0">
                 </div>
                 <div class="form-group">
-                    <label for="age">Возраст:</label>
-                    <input type="number" id="age" name="age" value="0">
+                    <label for="age" class="form-label">Возраст:</label>
+                    <input class="form-control" type="number" id="age" name="age" value="0">
                 </div>
-                <button id="predict-button" onclick="makePrediction()">Сделать прогноз</button>
-                <p id="prediction-result"></p> <!-- Место для отображения результата -->
+                <button class="btn btn-success" id="predict-button">Сделать прогноз</button>
+                <p id="prediction-result"></p>
             </form>
         </div>
     </div>
@@ -180,40 +180,37 @@
             }
         }
 
-        function makePrediction() {
-            document.getElementById('prediction-form').addEventListener('submit', function (event) {
-                event.preventDefault(); // Prevent the form from submitting normally
+        document.getElementById('prediction-form').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the form from submitting normally
 
-                // Get form data
-                const formData = new FormData(this);
+            // Get form data
+            const formData = new FormData(this);
 
-                // Send POST request using Fetch API
-                fetch('/predict_diabetes/', {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token in headers
+            // Send POST request using Fetch API
+            fetch('/predict_diabetes/', {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}' // Include CSRF token in headers
+                }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
                     }
+                    return response.json(); // Parse response body as JSON
                 })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json(); // Parse response body as JSON
-                    })
-                    .then(data => {
-                        const elem = document.getElementById('prediction-result');
-                        console.log(data)
-                        elem.textContent = data.probability
-                        
-                        // Handle response data as needed
-                    })
-                    .catch(error => {
-                        console.error('There was a problem with the fetch operation:', error);
-                        // Handle errors
-                    });
-            });
-        }
+                .then(data => {
+                    const elem = document.getElementById('prediction-result');
+                    console.log(data)
+                    elem.textContent = data.probability
 
+                    // Handle response data as needed
+                })
+                .catch(error => {
+                    console.error('There was a problem with the fetch operation:', error);
+                    // Handle errors
+                });
+        });
     </script>
 {% endblock %}
