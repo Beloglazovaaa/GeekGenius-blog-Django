@@ -3,6 +3,27 @@
 {% block title %}Авторизация{% endblock %}
 
 {% block content %}
+    {% block styles %}
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        .my-registration-form {
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+
+        footer {
+            flex-shrink: 0;
+            height: 50px; /* Замените значение на желаемую высоту футера */
+            background-color: #343a40; /* Цвет фона футера */
+        }
+    </style>
+{% endblock %}
+    
     <section class="my-registration-form">
         <div class="container">
             <div class="row justify-content-center">

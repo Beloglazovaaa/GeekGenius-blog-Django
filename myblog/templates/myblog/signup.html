@@ -3,6 +3,27 @@
 {% block title %}Регистрация{% endblock %}
 
 {% block content %}
+    {% block styles %}
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        .my-registration-form {
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+
+        footer {
+            flex-shrink: 0;
+            height: 50px; /* Замените значение на желаемую высоту футера */
+            background-color: #343a40; /* Цвет фона футера */
+        }
+    </style>
+{% endblock %}
+
     <section class="my-registration-form">
         <div class="container">
             <div class="row justify-content-center">
@@ -23,7 +44,7 @@
                                         <div class="alert alert-danger">
                                             <strong>{{ error|escape }}</strong>
                                         </div>
-                                {% endfor %}
+                                    {% endfor %}
                                 {% endfor %}
                                 {% for error in form.non_field_errors %}
                                     <div class="alert alert-danger">
@@ -31,22 +52,22 @@
                                     </div>
                                 {% endfor %}
                             {% endif %}
-                                <form method="post" action="{% url 'signup' %}">
-                                    {% csrf_token %}
-                                    <div class="mb-3">
-                                        <label for="inputUsername" class="form-label visually-hidden">Имя пользователя</label>
-                                        {{ form.username }}
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="inputPassword" class="form-label visually-hidden">Пароль</label>
-                                        {{ form.password }}
-                                    </div>
-                                    <div class="mb-3">
-                                        <label for="ReInputPassword" class="form-label visually-hidden">Повторите пароль</label>
-                                        {{ form.repeat_password }}
-                                    </div>
-                                    <button type="submit" class="btn btn-primary">Регистрация</button>
-                                </form>
+                            <form method="post" action="{% url 'signup' %}">
+                                {% csrf_token %}
+                                <div class="mb-3">
+                                    <label for="inputUsername" class="form-label visually-hidden">Имя пользователя</label>
+                                    {{ form.username }}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="inputPassword" class="form-label visually-hidden">Пароль</label>
+                                    {{ form.password }}
+                                </div>
+                                <div class="mb-3">
+                                    <label for="ReInputPassword" class="form-label visually-hidden">Повторите пароль</label>
+                                    {{ form.repeat_password }}
+                                </div>
+                                <button type="submit" class="btn btn-primary">Регистрация</button>
+                            </form>
                         </div>
                     </div>
                 </div>
