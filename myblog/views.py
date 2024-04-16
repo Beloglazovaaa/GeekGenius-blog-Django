@@ -8,8 +8,8 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
+from keras.models import load_model
 import joblib
-from tensorflow.keras.models import load_model
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import GradientBoostingClassifier
 from django.http import JsonResponse
@@ -19,7 +19,11 @@ from tensorflow.keras.layers import Dense, SimpleRNN
 
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
+from tensorflow.keras.layers import SimpleRNN
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import *
+from tensorflow.keras.layers import Dense
 import keras
 
 
@@ -254,7 +258,7 @@ def train_model_recurrent():
     X_scaled = scaler.fit_transform(X)
 
     # Создание и обучение модели RNN
-    model = Sequential([
+    model = keras.Sequential([
         SimpleRNN(50, return_sequences=True, input_shape=(X_scaled.shape[1], 1)),
         SimpleRNN(50),
         Dense(1, activation='sigmoid')
