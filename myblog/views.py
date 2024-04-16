@@ -13,7 +13,7 @@ import numpy as np
 from django.views.decorators.csrf import csrf_exempt
 from keras.models import load_model
 import joblib
-
+from tensorflow.keras.models import load_model
 from sklearn.linear_model import LogisticRegression
 
 from sklearn.ensemble import GradientBoostingClassifier
@@ -310,7 +310,7 @@ def predict_diabetes_recurrent(request):
     user_data_reshaped = user_data.reshape((1, user_data.shape[1], 1))
 
     # Predict the probability of diabetes
-    probability = model.predict(user_data_reshaped)[0][0]
+    probability = float(model.predict(user_data_reshaped)[0])
 
     # Save the predicted data to the database (assuming you have a model named DiabetesModel)
     DiabetesModel.objects.create(pregnancies=pregnancies, glucose=glucose, bloodpressure=blood_pressure,
