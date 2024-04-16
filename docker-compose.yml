@@ -1,4 +1,4 @@
-version: '3.8'
+version: '3'
 
 services:
   db:
@@ -9,6 +9,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: DB
+    volumes:
+      - ./db_django:/var/lib/mysql
 
   web:
     container_name: blog_django
@@ -21,6 +23,7 @@ services:
       - "8000:8000"
     environment:
       - MYSQL_HOST=db
+      - MYSQL_PORT=3306
     depends_on:
       - db
 
@@ -36,3 +39,7 @@ services:
 
 volumes:
   django_blog:
+
+networks:
+  default:
+    driver: bridge

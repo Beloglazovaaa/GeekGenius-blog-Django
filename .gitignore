@@ -1,3 +1,6 @@
 .venv
 staticfiles
 .idea
+db_django
+gradient_boosting_model.pkl
+rnn_model.h5

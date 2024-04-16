@@ -14,11 +14,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import GradientBoostingClassifier
 from django.http import JsonResponse
 from .models import DiabetesModel
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, SimpleRNN
 
-import pandas as pd
-from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.layers import SimpleRNN
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
@@ -245,6 +241,27 @@ def build_model(input_shape):
     return model
 
 
+import pandas as pd
+from sklearn.preprocessing import StandardScaler
+from tensorflow import keras
+from keras.layers import SimpleRNN, Dense
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+
+model = None
+scaler = None
+
+
+def build_model(input_shape):
+    model = keras.Sequential([
+        SimpleRNN(50, return_sequences=True, input_shape=input_shape),
+        SimpleRNN(50),
+        Dense(1)
+    ])
+    model.compile(optimizer='adam', loss='mean_squared_error')
+    return model
+
+
 def train_model_recurrent():
     # Загрузка данных
     data = pd.read_csv('myblog/diabetes.csv')
@@ -257,24 +274,15 @@ def train_model_recurrent():
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
-    # Создание и обучение модели RNN
-    model = keras.Sequential([
-        SimpleRNN(50, return_sequences=True, input_shape=(X_scaled.shape[1], 1)),
-        SimpleRNN(50),
-        Dense(1, activation='sigmoid')
-    ])
-    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+    model = build_model((X_scaled.shape[1], 1))
     model.fit(X_scaled.reshape((X_scaled.shape[0], X_scaled.shape[1], 1)), y, epochs=10, batch_size=32)
-
-    # Сохранение обученной модели для будущего использования
-    model.save('rnn_model.h5')
+    model.save_weights('rnn_model.weights.h5')
 
     return model, scaler
 
 
 @csrf_exempt
 def predict_diabetes_recurrent(request):
-    # Получение входных данных от пользователя из POST-запроса
     pregnancies = float(request.POST.get('pregnancies'))
     glucose = float(request.POST['glucose'])
     blood_pressure = float(request.POST.get('blood-pressure'))
@@ -284,31 +292,47 @@ def predict_diabetes_recurrent(request):
     diabetes_pedigree_function = float(request.POST.get('diabetes-pedigree'))
     age = float(request.POST.get('age'))
 
-    # Обучение модели RNN и получение масштабировщика
-    model, scaler = train_model_recurrent()
+    global model, scaler
+    if request.method == 'POST':
+        if model is None:
+            train_model_recurrent()
+        else:
+            model.load_weights('rnn_model.weights.h5')
 
-    # Загрузка обученной модели
-    model = load_model('rnn_model.h5')
+        # Load scaler object
+        if scaler is None:
+            scaler = StandardScaler()  # Assuming you saved the scaler object separately
 
-    # Масштабирование входных данных пользователя
-    user_data = scaler.transform(
-        [[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]])
+        # Get input data from POST request
+        input_data = {
+            'pregnancies': float(request.POST.get('pregnancies')),
+            'glucose': float(request.POST.get('glucose')),
+            'blood_pressure': float(request.POST.get('blood-pressure')),
+            'skin_thickness': float(request.POST.get('skin-thickness')),
+            'insulin': float(request.POST.get('insulin')),
+            'bmi': float(request.POST.get('bmi')),
+            'diabetes_pedigree': float(request.POST.get('diabetes-pedigree')),
+            'age': float(request.POST.get('age'))
+        }
 
-    # Изменение формы входных данных для модели RNN
-    user_data_reshaped = user_data.reshape((1, user_data.shape[1], 1))
+        # Масштабирование входных данных пользователя
+        scaled_input = scaler.transform([list(input_data.values())])
 
-    # Предсказание вероятности диабета
-    probability = float(model.predict(user_data_reshaped)[0])
+        # Изменение формы входных данных для модели RNN
+        reshaped_input = scaled_input.reshape((1, scaled_input.shape[1], 1))
 
-    # Сохранение предсказанных данных в базу данных (предполагается, что у вас есть модель с именем DiabetesModel)
-    DiabetesModel.objects.create(pregnancies=pregnancies, glucose=glucose, bloodpressure=blood_pressure,
-                                 skinthickness=skin_thickness, insulin=insulin, bmi=bmi,
-                                 diabetespedigreefunction=diabetes_pedigree_function, age=age,
-                                 probability=probability)
+        # Предсказание вероятности диабета
+        probability = float(model.predict(reshaped_input)[0])
 
-    # Возврат предсказанной вероятности диабета в формате JSON-ответа
-    return JsonResponse({'probability': probability})
-
+        # Сохранение предсказанных данных в базу данных
+        DiabetesModel.objects.create(pregnancies=pregnancies, glucose=glucose, bloodpressure=blood_pressure,
+                                     skinthickness=skin_thickness, insulin=insulin, bmi=bmi,
+                                     diabetespedigreefunction=diabetes_pedigree_function, age=age,
+                                     probability=probability)
+        # Возврат предсказанной вероятности диабета в формате JSON-ответа
+        return JsonResponse({'probability': probability})
+    else:
+        return JsonResponse({'error': 'Invalid request method'})
 
 
 def get_latest_diabetes_prediction(request):
