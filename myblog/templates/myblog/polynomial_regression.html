@@ -41,6 +41,7 @@
             overflow-x: auto;
             text-align: left;
         }
+
         /* Выравниваем текст по левому краю */
     </style>
 
@@ -204,8 +205,8 @@
                     const elem = document.getElementById('prediction-result');
                     console.log(data)
                     elem.textContent = data.probability
-
-                    // Handle response data as needed
+                    const button = document.getElementById('predict-button');
+                    button.disabled = true
                 })
                 .catch(error => {
                     console.error('There was a problem with the fetch operation:', error);

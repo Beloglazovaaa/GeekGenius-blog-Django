@@ -223,8 +223,9 @@
                 })
                 .then(data => {
                     const elem = document.getElementById('prediction-result');
-                    console.log(data)
                     elem.textContent = data.probability
+                    const button = document.getElementById('predict-button');
+                    button.disabled = true
                 })
 
         });
