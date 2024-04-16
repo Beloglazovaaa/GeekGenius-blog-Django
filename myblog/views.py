@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.core.paginator import Paginator
 from .models import Post, DataModel
@@ -11,15 +11,10 @@ from django.db.models import Q
 from django.http import JsonResponse
 import numpy as np
 from django.views.decorators.csrf import csrf_exempt
-import json
-from sklearn.datasets import make_regression
-from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
+from keras.models import load_model
 import joblib
 
 from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import StandardScaler
-import pandas as pd
 
 from sklearn.ensemble import GradientBoostingClassifier
 
@@ -32,7 +27,6 @@ from .models import DiabetesModel
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, SimpleRNN
 
 import pandas as pd
@@ -276,7 +270,7 @@ def train_model_recurrent():
     X_scaled = scaler.fit_transform(X)
 
     # Create and train the RNN model
-    model = Sequential([
+    model = keras.Sequential([
         SimpleRNN(50, return_sequences=True, input_shape=(X_scaled.shape[1], 1)),
         SimpleRNN(50),
         Dense(1, activation='sigmoid')
@@ -306,7 +300,7 @@ def predict_diabetes_recurrent(request):
     model, scaler = train_model_recurrent()
 
     # Load the trained model
-    model = Sequential.load_model('rnn_model.h5')
+    model = load_model('rnn_model.h5')
 
     # Scale the user input data
     user_data = scaler.transform(
