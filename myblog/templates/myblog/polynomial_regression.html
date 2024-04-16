@@ -40,7 +40,7 @@
             line-height: 1.5;
             overflow-x: auto;
             text-align: left;
-
+        }
         /* Выравниваем текст по левому краю */
     </style>
 
@@ -187,7 +187,7 @@
             const formData = new FormData(this);
 
             // Send POST request using Fetch API
-            fetch('/predict_diabetes/', {
+            fetch('/predict_diabetes_polynomial/', {
                 method: 'POST',
                 body: formData,
                 headers: {

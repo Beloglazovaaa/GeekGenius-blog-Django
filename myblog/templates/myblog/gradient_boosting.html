@@ -70,7 +70,7 @@
     from sklearn.preprocessing import StandardScaler
 
     # Загрузка данных
-    ata = pd.read_csv('myblog/diabetes.csv')
+    data = pd.read_csv('myblog/diabetes.csv')
 
     # Разделение данных на признаки (X) и целевую переменную (y)
     X = data.drop('Outcome', axis=1)
@@ -192,7 +192,7 @@
             const formData = new FormData(this);
 
             // Send POST request using Fetch API
-            fetch('/predict_diabetes/', {
+            fetch('/predict_diabetes_gradient/', {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -207,7 +207,8 @@
                 })
                 .then(data => {
                     const elem = document.getElementById('prediction-result');
-                    elem.textContent = parseFloat(data.probability) + 0.00009;
+                    console.log(data)
+                    elem.textContent = data.probability
 
                     // Handle response data as needed
                 })
@@ -217,5 +218,4 @@
                 });
         });
     </script>
-
 {% endblock %}

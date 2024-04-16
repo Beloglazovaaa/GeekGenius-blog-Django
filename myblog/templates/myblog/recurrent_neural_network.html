@@ -39,7 +39,7 @@
             font-family: monospace;
             line-height: 1.5;
             overflow-x: auto;
-            text-align: left;
+            text-align: left; }
 
         /* Выравниваем текст по левому краю */
     </style>
@@ -208,7 +208,7 @@
             const formData = new FormData(this);
 
             // Send POST request using Fetch API
-            fetch('/predict_diabetes/', {
+            fetch('/predict_diabetes_recurrent/', {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -223,7 +223,8 @@
                 })
                 .then(data => {
                     const elem = document.getElementById('prediction-result');
-                    elem.textContent = parseFloat(data.probability) + 0.00003;
+                    console.log(data)
+                    elem.textContent = data.probability
                 })
 
         });

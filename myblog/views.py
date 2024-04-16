@@ -12,7 +12,37 @@ from django.http import JsonResponse
 import numpy as np
 from django.views.decorators.csrf import csrf_exempt
 import json
+from sklearn.datasets import make_regression
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+import joblib
 
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import StandardScaler
+import pandas as pd
+
+
+from sklearn.ensemble import GradientBoostingClassifier
+
+from django.http import JsonResponse
+from .models import DiabetesModel
+
+import warnings
+from .models import DiabetesModel
+
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from tensorflow.keras.models import *
+from tensorflow.keras.layers import Dense, SimpleRNN
+
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import StandardScaler
+from sklearn.model_selection import train_test_split
+import tensorflow as tf
+from tensorflow.keras.models import *
+from tensorflow.keras.layers import LSTM, Dense
 
 def polynomial_regression_page(request):
     return render(request, 'myblog/polynomial_regression.html')
@@ -115,55 +145,7 @@ class SearchResultsView(View):
         })
 
 
-from sklearn.datasets import make_regression
-from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
-import joblib
-
-import warnings
-from .models import DiabetesModel
-from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import StandardScaler
-import pandas as pd
-
-# Отключение предупреждений
-warnings.filterwarnings("ignore")
-
-
-def polynomial_regression_page(request):
-    return render(request, 'myblog/polynomial_regression.html')
-
-
-def train_model_function():
-    # Генерация симуляционных данных
-    X, y = make_regression(n_samples=100, n_features=1, noise=0.1)
-
-    # Разделение данных на обучающую и тестовую выборку
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-    # Создание и обучение модели
-    model = LinearRegression()
-    model.fit(X_train, y_train)
-
-    # Сохранение обученной модели для последующего использования
-    joblib.dump(model, 'linear_regression_model.pkl')
-
-    return "Модель обучена и сохранена."
-
-
-@csrf_exempt
-def predict_diabetes(request):
-    # Получение данных из POST-запроса
-    pregnancies = float(request.POST.get('pregnancies'))
-    glucose = float(request.POST['glucose'])
-    blood_pressure = float(request.POST.get('blood-pressure'))
-    skin_thickness = float(request.POST.get('skin-thickness'))
-    insulin = float(request.POST.get('insulin'))
-    bmi = float(request.POST.get('bmi'))
-    diabetes_pedigree_function = float(request.POST.get('diabetes-pedigree'))
-    age = float(request.POST.get('age'))
-
-    # Загрузка данных для модели логистической регрессии
+def train_model_polynomial():
     data = pd.read_csv('myblog/diabetes.csv')
 
     # Разделение данных на признаки (X) и целевую переменную (y)
@@ -179,6 +161,77 @@ def predict_diabetes(request):
     model = LogisticRegression()
     model.fit(X_scaled, y)
 
+    # Сохранение обученной модели для последующего использования
+    joblib.dump(model, 'polynomial_regression_model.pkl')
+    return model, scaler
+    return "Модель обучена и сохранена."
+@csrf_exempt
+def predict_diabetes_polynomial(request):
+    # Получение данных из POST-запроса
+    pregnancies = float(request.POST.get('pregnancies'))
+    glucose = float(request.POST['glucose'])
+    blood_pressure = float(request.POST.get('blood-pressure'))
+    skin_thickness = float(request.POST.get('skin-thickness'))
+    insulin = float(request.POST.get('insulin'))
+    bmi = float(request.POST.get('bmi'))
+    diabetes_pedigree_function = float(request.POST.get('diabetes-pedigree'))
+    age = float(request.POST.get('age'))
+
+    model, scaler = train_model_polynomial()
+
+    model = joblib.load('polynomial_regression_model.pkl')
+    # Масштабирование введенных пользователем данных
+    user_data = scaler.transform(
+        [[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]])
+
+    # Предсказание вероятности возникновения диабета
+    probability = model.predict_proba(user_data)[:, 1][0]
+
+    # Сохранение предсказанных данных в базе данных
+    DiabetesModel.objects.create(pregnancies=pregnancies, glucose=glucose, bloodpressure=blood_pressure,
+                                 skinthickness=skin_thickness, insulin=insulin, bmi=bmi,
+                                 diabetespedigreefunction=diabetes_pedigree_function, age=age,
+                                 probability=probability)
+
+    # Возврат предсказанной вероятности диабета в формате JSON
+    return JsonResponse({'probability': probability})
+
+def train_model_gradient():
+    data = pd.read_csv('myblog/diabetes.csv')
+
+    # Разделение данных на признаки (X) и целевую переменную (y)
+    X = data.drop('Outcome', axis=1)
+    y = data['Outcome']
+
+    # Масштабирование признаков
+    scaler = StandardScaler()
+    scaler.fit(X)
+    X_scaled = scaler.transform(X)
+
+    # Создание и обучение модели логистической регрессии
+    model = GradientBoostingClassifier()
+    model.fit(X_scaled, y)
+
+    # Сохранение обученной модели для последующего использования
+    joblib.dump(model, 'gradient_boosting_model.pkl')
+    return model, scaler
+    return "Модель обучена и сохранена."
+
+
+def predict_diabetes_gradient(request):
+    # Получение данных из POST-запроса
+    pregnancies = float(request.POST.get('pregnancies'))
+    glucose = float(request.POST['glucose'])
+    blood_pressure = float(request.POST.get('blood-pressure'))
+    skin_thickness = float(request.POST.get('skin-thickness'))
+    insulin = float(request.POST.get('insulin'))
+    bmi = float(request.POST.get('bmi'))
+    diabetes_pedigree_function = float(request.POST.get('diabetes-pedigree'))
+    age = float(request.POST.get('age'))
+
+    model, scaler = train_model_gradient()
+
+    model = joblib.load('gradient_boosting_model.pkl')
     # Масштабирование введенных пользователем данных
     user_data = scaler.transform(
         [[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]])
@@ -196,8 +249,79 @@ def predict_diabetes(request):
     return JsonResponse({'probability': probability})
 
 
-from django.http import JsonResponse
-from .models import DiabetesModel
+
+def train_model_recurrent():
+    # Загрузка данных
+    data = pd.read_csv('myblog/diabetes.csv')
+
+    # Разделение данных на признаки (X) и целевую переменную (y)
+    X = data.drop('Outcome', axis=1)
+    y = data['Outcome']
+
+    # Масштабирование признаков
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    # Разделение данных на обучающий и тестовый наборы
+    X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
+
+    # Преобразование данных для использования в RNN
+    X_train = np.reshape(X_train, (X_train.shape[0], 1, X_train.shape[1]))
+    X_test = np.reshape(X_test, (X_test.shape[0], 1, X_test.shape[1]))
+
+    # Создание модели RNN
+    model = Sequential()
+    model.add(LSTM(50, input_shape=(X_train.shape[1], X_train.shape[2])))
+    model.add(Dense(1, activation='sigmoid'))
+
+    # Компиляция модели
+    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
+
+    # Обучение модели
+    model.fit(X_train, y_train, epochs=10, batch_size=32)
+
+    # Сохранение обученной модели для последующего использования
+    model.save('rnn_model.h5')
+    return model, scaler
+    return "Модель обучена и сохранена."
+
+
+@csrf_exempt
+def predict_diabetes_recurrent(request):
+    # Получение данных из POST-запроса
+    pregnancies = float(request.POST.get('pregnancies'))
+    glucose = float(request.POST['glucose'])
+    blood_pressure = float(request.POST.get('blood-pressure'))
+    skin_thickness = float(request.POST.get('skin-thickness'))
+    insulin = float(request.POST.get('insulin'))
+    bmi = float(request.POST.get('bmi'))
+    diabetes_pedigree_function = float(request.POST.get('diabetes-pedigree'))
+    age = float(request.POST.get('age'))
+
+    # Загрузка и использование обученной модели RNN
+    model, scaler = train_model_recurrent()
+
+    # Загрузка сохраненной модели
+    model = tf.keras.models.load_model('rnn_model.h5')
+
+    # Масштабирование введенных пользователем данных
+    user_data = scaler.transform([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]])
+
+    # Преобразование данных для использования в RNN
+    '''user_data = np.reshape(user_data, (user_data.shape[0], 1, user_data.shape[1]))
+'''
+    # Предсказание вероятности возникновения диабета
+    probability = model.predict(user_data)[0][0]
+
+    # Сохранение предсказанных данных в базе данных
+    DiabetesModel.objects.create(pregnancies=pregnancies, glucose=glucose, bloodpressure=blood_pressure,
+                                 skinthickness=skin_thickness, insulin=insulin, bmi=bmi,
+                                 diabetespedigreefunction=diabetes_pedigree_function, age=age,
+                                 probability=probability)
+
+    # Возврат предсказанной вероятности диабета в формате JSON
+    return JsonResponse({'probability': probability})
+
 
 
 def get_latest_diabetes_prediction(request):
