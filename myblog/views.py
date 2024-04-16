@@ -21,7 +21,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler
 import pandas as pd
 
-
 from sklearn.ensemble import GradientBoostingClassifier
 
 from django.http import JsonResponse
@@ -43,6 +42,8 @@ from sklearn.model_selection import train_test_split
 import tensorflow as tf
 from tensorflow.keras.models import *
 from tensorflow.keras.layers import LSTM, Dense
+import keras
+
 
 def polynomial_regression_page(request):
     return render(request, 'myblog/polynomial_regression.html')
@@ -165,6 +166,8 @@ def train_model_polynomial():
     joblib.dump(model, 'polynomial_regression_model.pkl')
     return model, scaler
     return "Модель обучена и сохранена."
+
+
 @csrf_exempt
 def predict_diabetes_polynomial(request):
     # Получение данных из POST-запроса
@@ -195,6 +198,7 @@ def predict_diabetes_polynomial(request):
 
     # Возврат предсказанной вероятности диабета в формате JSON
     return JsonResponse({'probability': probability})
+
 
 def train_model_gradient():
     data = pd.read_csv('myblog/diabetes.csv')
@@ -249,6 +253,15 @@ def predict_diabetes_gradient(request):
     return JsonResponse({'probability': probability})
 
 
+def build_model(input_shape):
+    model = keras.Sequential([
+        SimpleRNN(50, return_sequences=True, input_shape=input_shape),
+        SimpleRNN(50),
+        Dense(1)
+    ])
+    model.compile(optimizer='adam', loss='mean_squared_error')
+    return model
+
 
 def train_model_recurrent():
     # Загрузка данных
@@ -266,24 +279,22 @@ def train_model_recurrent():
     X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
 
     # Преобразование данных для использования в RNN
-    X_train = np.reshape(X_train, (X_train.shape[0], 1, X_train.shape[1]))
-    X_test = np.reshape(X_test, (X_test.shape[0], 1, X_test.shape[1]))
+    X_train = X_train.reshape((X_train.shape[0], 1, X_train.shape[1]))
+    X_test = X_test.reshape((X_test.shape[0], 1, X_test.shape[1]))
 
     # Создание модели RNN
-    model = Sequential()
-    model.add(LSTM(50, input_shape=(X_train.shape[1], X_train.shape[2])))
-    model.add(Dense(1, activation='sigmoid'))
-
-    # Компиляция модели
-    model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
-
+    model = keras.Sequential([
+        SimpleRNN(50, return_sequences=True, input_shape=(X_train.shape[1], X_train.shape[2])),
+        SimpleRNN(50),
+        Dense(1, activation='sigmoid')
+    ])
+    model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
     # Обучение модели
     model.fit(X_train, y_train, epochs=10, batch_size=32)
 
     # Сохранение обученной модели для последующего использования
     model.save('rnn_model.h5')
     return model, scaler
-    return "Модель обучена и сохранена."
 
 
 @csrf_exempt
@@ -305,7 +316,8 @@ def predict_diabetes_recurrent(request):
     model = tf.keras.models.load_model('rnn_model.h5')
 
     # Масштабирование введенных пользователем данных
-    user_data = scaler.transform([[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]])
+    user_data = scaler.transform(
+        [[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]])
 
     # Преобразование данных для использования в RNN
     '''user_data = np.reshape(user_data, (user_data.shape[0], 1, user_data.shape[1]))
@@ -321,7 +333,6 @@ def predict_diabetes_recurrent(request):
 
     # Возврат предсказанной вероятности диабета в формате JSON
     return JsonResponse({'probability': probability})
-
 
 
 def get_latest_diabetes_prediction(request):
