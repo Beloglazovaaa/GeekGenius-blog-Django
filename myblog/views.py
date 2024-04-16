@@ -1,47 +1,25 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.core.paginator import Paginator
-from .models import Post, DataModel
+from .models import Post
 from .forms import SignUpForm, SignInForm
 from django.contrib.auth import login, authenticate, logout
 from django.http import HttpResponseRedirect
-from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render
 from django.db.models import Q
-from django.http import JsonResponse
-import numpy as np
 from django.views.decorators.csrf import csrf_exempt
-import json
-from sklearn.datasets import make_regression
-from sklearn.linear_model import LinearRegression
-from sklearn.model_selection import train_test_split
 import joblib
 from tensorflow.keras.models import load_model
 from sklearn.linear_model import LogisticRegression
-from sklearn.preprocessing import StandardScaler
-import pandas as pd
-
 from sklearn.ensemble import GradientBoostingClassifier
-
 from django.http import JsonResponse
 from .models import DiabetesModel
-
-import warnings
-from .models import DiabetesModel
-
-import pandas as pd
-import numpy as np
-from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, SimpleRNN
 
 import pandas as pd
-import numpy as np
 from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
-import tensorflow as tf
 from tensorflow.keras.models import *
-from tensorflow.keras.layers import LSTM, Dense
 import keras
 
 
@@ -267,15 +245,15 @@ def train_model_recurrent():
     # Загрузка данных
     data = pd.read_csv('myblog/diabetes.csv')
 
-    # Split the data into features (X) and target variable (y)
+    # Разделение данных на признаки (X) и целевую переменную (y)
     X = data.drop('Outcome', axis=1)
     y = data['Outcome']
 
-    # Scale the features
+    # Масштабирование признаков
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
-    # Create and train the RNN model
+    # Создание и обучение модели RNN
     model = Sequential([
         SimpleRNN(50, return_sequences=True, input_shape=(X_scaled.shape[1], 1)),
         SimpleRNN(50),
@@ -284,7 +262,7 @@ def train_model_recurrent():
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
     model.fit(X_scaled.reshape((X_scaled.shape[0], X_scaled.shape[1], 1)), y, epochs=10, batch_size=32)
 
-    # Save the trained model for future use
+    # Сохранение обученной модели для будущего использования
     model.save('rnn_model.h5')
 
     return model, scaler
@@ -292,7 +270,7 @@ def train_model_recurrent():
 
 @csrf_exempt
 def predict_diabetes_recurrent(request):
-    # Get user input data from the POST request
+    # Получение входных данных от пользователя из POST-запроса
     pregnancies = float(request.POST.get('pregnancies'))
     glucose = float(request.POST['glucose'])
     blood_pressure = float(request.POST.get('blood-pressure'))
@@ -302,30 +280,31 @@ def predict_diabetes_recurrent(request):
     diabetes_pedigree_function = float(request.POST.get('diabetes-pedigree'))
     age = float(request.POST.get('age'))
 
-    # Train the RNN model and get scaler
+    # Обучение модели RNN и получение масштабировщика
     model, scaler = train_model_recurrent()
 
-    # Load the trained model
+    # Загрузка обученной модели
     model = load_model('rnn_model.h5')
 
-    # Scale the user input data
+    # Масштабирование входных данных пользователя
     user_data = scaler.transform(
         [[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]])
 
-    # Reshape the input data for the RNN model
+    # Изменение формы входных данных для модели RNN
     user_data_reshaped = user_data.reshape((1, user_data.shape[1], 1))
 
-    # Predict the probability of diabetes
+    # Предсказание вероятности диабета
     probability = float(model.predict(user_data_reshaped)[0])
 
-    # Save the predicted data to the database (assuming you have a model named DiabetesModel)
+    # Сохранение предсказанных данных в базу данных (предполагается, что у вас есть модель с именем DiabetesModel)
     DiabetesModel.objects.create(pregnancies=pregnancies, glucose=glucose, bloodpressure=blood_pressure,
                                  skinthickness=skin_thickness, insulin=insulin, bmi=bmi,
                                  diabetespedigreefunction=diabetes_pedigree_function, age=age,
                                  probability=probability)
 
-    # Return the predicted probability of diabetes as JSON response
+    # Возврат предсказанной вероятности диабета в формате JSON-ответа
     return JsonResponse({'probability': probability})
+
 
 
 def get_latest_diabetes_prediction(request):
