@@ -11,13 +11,6 @@
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <link rel="stylesheet" href="{% static '/css/style.css' %}">
-    <style>
-        .footer {
-            background-color: #343a40 !important; /* серый цвет */
-            height: 50px; /* высота 100px */
-            color: white; /* цвет текста */
-        }
-    </style>
 </head>
 <body>
 
@@ -29,7 +22,7 @@
 
 {% block pagination %}{% endblock %}
 
-<footer class="footer" style="height: 150px;">
+<footer class="footer p-3">
     <div class="container">
         <span class="text-muted"></span>
     </div>

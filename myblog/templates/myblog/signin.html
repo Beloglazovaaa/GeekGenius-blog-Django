@@ -4,26 +4,19 @@
 
 {% block content %}
     {% block styles %}
-    <style>
-        html, body {
-            height: 100%;
-        }
+        <style>
+            html, body {
+                height: 100%;
+            }
 
-        .my-registration-form {
-            min-height: 70vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
+            .my-registration-form {
+                min-height: 70vh;
+                display: flex;
+                flex-direction: column;
+            }
+        </style>
+    {% endblock %}
 
-        footer {
-            flex-shrink: 0;
-            height: 50px; /* Замените значение на желаемую высоту футера */
-            background-color: #343a40; /* Цвет фона футера */
-        }
-    </style>
-{% endblock %}
-    
     <section class="my-registration-form">
         <div class="container">
             <div class="row justify-content-center">
@@ -55,7 +48,8 @@
                             <form method="post" action="{% url 'signin' %}">
                                 {% csrf_token %}
                                 <div class="mb-3">
-                                    <label for="inputUsername" class="form-label visually-hidden">Имя пользователя</label>
+                                    <label for="inputUsername" class="form-label visually-hidden">Имя
+                                        пользователя</label>
                                     {{ form.username }}
                                 </div>
                                 <div class="mb-3">
