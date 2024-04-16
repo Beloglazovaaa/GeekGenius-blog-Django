@@ -1,41 +1,24 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.core.paginator import Paginator
-from .models import Post, DataModel
+from .models import Post
 from .forms import SignUpForm, SignInForm
 from django.contrib.auth import login, authenticate, logout
 from django.http import HttpResponseRedirect
-from django.contrib.auth.forms import AuthenticationForm
 from django.shortcuts import render
 from django.db.models import Q
-from django.http import JsonResponse
-import numpy as np
 from django.views.decorators.csrf import csrf_exempt
 from keras.models import load_model
 import joblib
-from tensorflow.keras.models import load_model
 from sklearn.linear_model import LogisticRegression
-
 from sklearn.ensemble import GradientBoostingClassifier
-
 from django.http import JsonResponse
 from .models import DiabetesModel
-
-import warnings
-from .models import DiabetesModel
-
+from tensorflow.keras.layers import SimpleRNN
 import pandas as pd
-import numpy as np
 from sklearn.preprocessing import StandardScaler
-from tensorflow.keras.layers import Dense, SimpleRNN
-
-import pandas as pd
-import numpy as np
-from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
-import tensorflow as tf
 from tensorflow.keras.models import *
-from tensorflow.keras.layers import LSTM, Dense
+from tensorflow.keras.layers import Dense
 import keras
 
 
