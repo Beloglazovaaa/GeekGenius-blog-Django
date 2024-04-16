@@ -32,7 +32,7 @@ from .models import DiabetesModel
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
-from tensorflow.keras.models import *
+from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import Dense, SimpleRNN
 
 import pandas as pd
@@ -267,39 +267,32 @@ def train_model_recurrent():
     # Загрузка данных
     data = pd.read_csv('myblog/diabetes.csv')
 
-    # Разделение данных на признаки (X) и целевую переменную (y)
+    # Split the data into features (X) and target variable (y)
     X = data.drop('Outcome', axis=1)
     y = data['Outcome']
 
-    # Масштабирование признаков
+    # Scale the features
     scaler = StandardScaler()
     X_scaled = scaler.fit_transform(X)
 
-    # Разделение данных на обучающий и тестовый наборы
-    X_train, X_test, y_train, y_test = train_test_split(X_scaled, y, test_size=0.2, random_state=42)
-
-    # Преобразование данных для использования в RNN
-    X_train = X_train.reshape((X_train.shape[0], 1, X_train.shape[1]))
-    X_test = X_test.reshape((X_test.shape[0], 1, X_test.shape[1]))
-
-    # Создание модели RNN
-    model = keras.Sequential([
-        SimpleRNN(50, return_sequences=True, input_shape=(X_train.shape[1], X_train.shape[2])),
+    # Create and train the RNN model
+    model = Sequential([
+        SimpleRNN(50, return_sequences=True, input_shape=(X_scaled.shape[1], 1)),
         SimpleRNN(50),
         Dense(1, activation='sigmoid')
     ])
     model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
-    # Обучение модели
-    model.fit(X_train, y_train, epochs=10, batch_size=32)
+    model.fit(X_scaled.reshape((X_scaled.shape[0], X_scaled.shape[1], 1)), y, epochs=10, batch_size=32)
 
-    # Сохранение обученной модели для последующего использования
+    # Save the trained model for future use
     model.save('rnn_model.h5')
+
     return model, scaler
 
 
 @csrf_exempt
 def predict_diabetes_recurrent(request):
-    # Получение данных из POST-запроса
+    # Get user input data from the POST request
     pregnancies = float(request.POST.get('pregnancies'))
     glucose = float(request.POST['glucose'])
     blood_pressure = float(request.POST.get('blood-pressure'))
@@ -309,29 +302,29 @@ def predict_diabetes_recurrent(request):
     diabetes_pedigree_function = float(request.POST.get('diabetes-pedigree'))
     age = float(request.POST.get('age'))
 
-    # Загрузка и использование обученной модели RNN
+    # Train the RNN model and get scaler
     model, scaler = train_model_recurrent()
 
-    # Загрузка сохраненной модели
-    model = tf.keras.models.load_model('rnn_model.h5')
+    # Load the trained model
+    model = Sequential.load_model('rnn_model.h5')
 
-    # Масштабирование введенных пользователем данных
+    # Scale the user input data
     user_data = scaler.transform(
         [[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree_function, age]])
 
-    # Преобразование данных для использования в RNN
-    '''user_data = np.reshape(user_data, (user_data.shape[0], 1, user_data.shape[1]))
-'''
-    # Предсказание вероятности возникновения диабета
-    probability = model.predict(user_data)[0][0]
+    # Reshape the input data for the RNN model
+    user_data_reshaped = user_data.reshape((1, user_data.shape[1], 1))
 
-    # Сохранение предсказанных данных в базе данных
+    # Predict the probability of diabetes
+    probability = model.predict(user_data_reshaped)[0][0]
+
+    # Save the predicted data to the database (assuming you have a model named DiabetesModel)
     DiabetesModel.objects.create(pregnancies=pregnancies, glucose=glucose, bloodpressure=blood_pressure,
                                  skinthickness=skin_thickness, insulin=insulin, bmi=bmi,
                                  diabetespedigreefunction=diabetes_pedigree_function, age=age,
                                  probability=probability)
 
-    # Возврат предсказанной вероятности диабета в формате JSON
+    # Return the predicted probability of diabetes as JSON response
     return JsonResponse({'probability': probability})
 
 
