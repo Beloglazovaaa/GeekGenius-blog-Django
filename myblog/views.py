@@ -1,26 +1,22 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from django.core.paginator import Paginator
-from .models import Post
-from .forms import SignUpForm, SignInForm
 from django.contrib.auth import login, authenticate, logout
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.db.models import Q
 from django.views.decorators.csrf import csrf_exempt
-from keras.models import load_model
-import joblib
+
+from .models import Post, DiabetesModel
+from .forms import SignUpForm, SignInForm
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import GradientBoostingClassifier
-from django.http import JsonResponse
-from .models import DiabetesModel
+import joblib
 
+import keras
 from tensorflow.keras.layers import SimpleRNN
-import pandas as pd
-from sklearn.preprocessing import StandardScaler
 from tensorflow.keras.models import *
 from tensorflow.keras.layers import Dense
-import keras
 
 
 def polynomial_regression_page(request):
@@ -295,7 +291,7 @@ def predict_diabetes_recurrent(request):
     global model, scaler
     if request.method == 'POST':
         if model is None:
-            train_model_recurrent()
+            model, scaler = train_model_recurrent()
         else:
             model.load_weights('rnn_model.weights.h5')
 
